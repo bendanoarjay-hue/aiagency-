@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#05050a" />
+<title>INIGO — Luxury Fashion from Manila</title>
+<meta name="description" content="INIGO is a luxury fashion label from Manila, Philippines — elevated streetwear meets futuristic couture. Collections, lookbooks, editorials & stockists." />
+<meta name="keywords" content="INIGO, Manila fashion, luxury fashion Philippines, futuristic couture, streetwear, editorial, lookbook" />
+<meta name="author" content="INIGO" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="INIGO — Luxury Fashion from Manila" />
+<meta property="og:description" content="Elevated streetwear meets futuristic couture. A luxury fashion label from Manila." />
+<meta property="og:image" content="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1600&q=80" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90' font-family='serif' font-weight='900'%3EI%3C/text%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Archivo:wght@400;500;700;900&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          void: '#05050a',
+          ink: '#0a0a12',
+          bone: '#e9e6df',
+          ash: 'rgba(233,230,223,0.5)',
+          ghost: 'rgba(233,230,223,0.12)',
+          accent: '#c8b287',
+        },
+        fontFamily: {
+          display: ['Syne', 'sans-serif'],
+          serif: ['Cormorant Garamond', 'serif'],
+          mono: ['Space Mono', 'monospace'],
+          sans: ['Archivo', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body class="bg-void text-bone font-display antialiased selection:bg-accent selection:text-void">
+
+<!-- LOADER -->
+<div id="loader" aria-hidden="true">
+  <div class="loader-inner">
+    <div class="loader-mark"><span>I</span><span>N</span><span>I</span><span>G</span><span>O</span></div>
+    <div class="loader-meta">
+      <span class="loader-coords">14.5995° N&nbsp;&nbsp;120.9842° E</span>
+      <span class="loader-count" id="loaderCount">00</span>
+    </div>
+    <div class="loader-bar"><span id="loaderBar"></span></div>
+  </div>
+</div>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursor" aria-hidden="true">
+  <div id="cursorDot"></div>
+  <div id="cursorRing"></div>
+  <div id="cursorLabel">VIEW</div>
+</div>
+
+<!-- NOISE + GRADIENT LAYERS -->
+<div class="noise-layer" aria-hidden="true"></div>
+<div class="vignette-layer" aria-hidden="true"></div>
+
+<!-- NAV -->
+<header class="nav">
+  <a href="#home" class="nav-logo" data-cursor="small">
+    <span class="logo-mark">INIGO</span>
+    <span class="logo-sub">MNL ⎯ 2019</span>
+  </a>
+
+  <nav class="nav-links" aria-label="Primary">
+    <a href="#about" data-link>About</a>
+    <a href="#collections" data-link>Collections</a>
+    <a href="#lookbook" data-link>Lookbook</a>
+    <a href="#journal" data-link>Journal</a>
+    <a href="#contact" data-link>Contact</a>
+  </nav>
+
+  <a href="#contact" class="nav-cta" data-cursor="small">
+    <span>Stockists</span>
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2V8" stroke="currentColor" stroke-width="1.2"/></svg>
+  </a>
+
+  <button id="menuToggle" class="menu-toggle" aria-label="Open menu">
+    <span></span><span></span>
+  </button>
+</header>
+
+<!-- MOBILE MENU -->
+<div id="mobileMenu" class="mobile-menu" aria-hidden="true">
+  <nav>
+    <a href="#about">About</a>
+    <a href="#collections">Collections</a>
+    <a href="#lookbook">Lookbook</a>
+    <a href="#journal">Journal</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="mobile-menu-foot">
+    <span>Manila, PH</span>
+    <span>IG / @inigo_____</span>
+  </div>
+</div>
+
+<main id="home">
+
+  <!-- ═════════ HERO ═════════ -->
+  <section class="hero">
+    <div class="hero-media">
+      <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1800&q=80" alt="INIGO editorial hero" data-parallax="0.15" />
+      <div class="hero-overlay"></div>
+    </div>
+
+    <div class="hero-grid">
+      <div class="hero-tag reveal">
+        <span class="dot"></span>
+        <span>LUXE / MNL / SS&nbsp;26</span>
+      </div>
+
+      <h1 class="hero-title">
+        <span class="line"><span class="word">FUTURE</span></span>
+        <span class="line italic serif"><span class="word">couture</span></span>
+        <span class="line ghost"><span class="word">FROM&nbsp;MANILA</span></span>
+      </h1>
+
+      <div class="hero-bottom">
+        <p class="hero-desc reveal">
+          INIGO is a luxury fashion house sculpting the silhouette of tomorrow — hand-woven in Manila, engineered for a world after.
+        </p>
+        <div class="hero-meta reveal">
+          <div><span class="k">EST.</span><span class="v">2019</span></div>
+          <div><span class="k">ATELIER</span><span class="v">POBLACION</span></div>
+          <div><span class="k">SEASON</span><span class="v">14 / XXVI</span></div>
+        </div>
+      </div>
+
+      <div class="hero-scroll">
+        <span>SCROLL</span>
+        <svg width="10" height="40" viewBox="0 0 10 40"><path d="M5 0V38M5 38L1 34M5 38L9 34" stroke="currentColor" stroke-width="1"/></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ MARQUEE ═════════ -->
+  <section class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>INIGO</span><i>✦</i>
+      <span>ELEVATED&nbsp;STREETWEAR</span><i>✦</i>
+      <span>FUTURISTIC&nbsp;COUTURE</span><i>✦</i>
+      <span>MANILA&nbsp;—&nbsp;PH</span><i>✦</i>
+      <span>SPRING&nbsp;/&nbsp;SUMMER&nbsp;26</span><i>✦</i>
+      <span>INIGO</span><i>✦</i>
+      <span>ELEVATED&nbsp;STREETWEAR</span><i>✦</i>
+      <span>FUTURISTIC&nbsp;COUTURE</span><i>✦</i>
+      <span>MANILA&nbsp;—&nbsp;PH</span><i>✦</i>
+      <span>SPRING&nbsp;/&nbsp;SUMMER&nbsp;26</span><i>✦</i>
+    </div>
+  </section>
+
+  <!-- ═════════ ABOUT ═════════ -->
+  <section id="about" class="about">
+    <div class="section-head">
+      <span class="section-idx">( 01 )</span>
+      <span class="section-name">A&nbsp;BRAND&nbsp;STUDY</span>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-copy">
+        <h2 class="kinetic-heading">
+          <span class="line reveal-line"><span>A&nbsp;house&nbsp;of&nbsp;quiet</span></span>
+          <span class="line reveal-line"><span class="italic serif">rebellion, rooted</span></span>
+          <span class="line reveal-line"><span>in&nbsp;the&nbsp;archipelago.</span></span>
+        </h2>
+        <div class="about-body">
+          <p class="reveal">
+            Founded in 2019 by a collective of Manila-based designers, INIGO stitches the grammar of Filipino craft into silhouettes engineered for a future that hasn't arrived yet. Each piece is treated as architecture — cut once, considered twice, worn forever.
+          </p>
+          <p class="reveal">
+            We build slow. We ship considered. We believe a garment is a document of its maker. INIGO is shown at Manila Fashion Week and stocked through a small, trusted network of boutiques across Southeast Asia.
+          </p>
+        </div>
+
+        <div class="about-stats">
+          <div class="stat reveal"><b data-count="47">00</b><span>Atelier&nbsp;Silhouettes</span></div>
+          <div class="stat reveal"><b data-count="12">00</b><span>Global&nbsp;Stockists</span></div>
+          <div class="stat reveal"><b data-count="06">00</b><span>Runway&nbsp;Seasons</span></div>
+        </div>
+      </div>
+
+      <div class="about-media">
+        <div class="about-img main" data-parallax="0.08">
+          <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1200&q=80" alt="INIGO atelier" />
+        </div>
+        <div class="about-img sub" data-parallax="-0.06">
+          <img src="https://images.unsplash.com/photo-1521335629791-ce4aec67dd47?auto=format&fit=crop&w=900&q=80" alt="INIGO detail" />
+        </div>
+        <div class="about-caption">
+          <span>01 / 02</span>
+          <span>ATELIER &nbsp;·&nbsp; POBLACION MNL</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ COLLECTIONS ═════════ -->
+  <section id="collections" class="collections">
+    <div class="section-head">
+      <span class="section-idx">( 02 )</span>
+      <span class="section-name">COLLECTIONS&nbsp;&amp;&nbsp;CAMPAIGNS</span>
+    </div>
+
+    <h2 class="section-title">
+      <span class="reveal-line"><span>Six&nbsp;worlds,</span></span>
+      <span class="reveal-line"><span class="italic serif">one&nbsp;silhouette.</span></span>
+    </h2>
+
+    <div class="collection-list">
+      <article class="collection-row" data-img="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=80">
+        <span class="c-idx">01</span>
+        <h3 class="c-title">ANTIPOLO <em>noir</em></h3>
+        <div class="c-meta"><span>SS&nbsp;26</span><span>24&nbsp;LOOKS</span></div>
+        <span class="c-cta">VIEW&nbsp;→</span>
+      </article>
+      <article class="collection-row" data-img="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80">
+        <span class="c-idx">02</span>
+        <h3 class="c-title">SALT <em>&amp;&nbsp;silver</em></h3>
+        <div class="c-meta"><span>AW&nbsp;25</span><span>18&nbsp;LOOKS</span></div>
+        <span class="c-cta">VIEW&nbsp;→</span>
+      </article>
+      <article class="collection-row" data-img="https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1200&q=80">
+        <span class="c-idx">03</span>
+        <h3 class="c-title">MONSOON <em>code</em></h3>
+        <div class="c-meta"><span>SS&nbsp;25</span><span>22&nbsp;LOOKS</span></div>
+        <span class="c-cta">VIEW&nbsp;→</span>
+      </article>
+      <article class="collection-row" data-img="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80">
+        <span class="c-idx">04</span>
+        <h3 class="c-title">NORTH <em>chromatic</em></h3>
+        <div class="c-meta"><span>AW&nbsp;24</span><span>19&nbsp;LOOKS</span></div>
+        <span class="c-cta">VIEW&nbsp;→</span>
+      </article>
+      <article class="collection-row" data-img="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1200&q=80">
+        <span class="c-idx">05</span>
+        <h3 class="c-title">TAAL <em>burnt</em></h3>
+        <div class="c-meta"><span>SS&nbsp;24</span><span>26&nbsp;LOOKS</span></div>
+        <span class="c-cta">VIEW&nbsp;→</span>
+      </article>
+      <article class="collection-row" data-img="https://images.unsplash.com/photo-1506629082955-511b1aa562c8?auto=format&fit=crop&w=1200&q=80">
+        <span class="c-idx">06</span>
+        <h3 class="c-title">ARCHIPELAGO <em>zero</em></h3>
+        <div class="c-meta"><span>RESORT&nbsp;24</span><span>14&nbsp;LOOKS</span></div>
+        <span class="c-cta">VIEW&nbsp;→</span>
+      </article>
+
+      <div class="collection-hover-img" id="collectionHover"></div>
+    </div>
+  </section>
+
+  <!-- ═════════ LOOKBOOK ═════════ -->
+  <section id="lookbook" class="lookbook">
+    <div class="section-head">
+      <span class="section-idx">( 03 )</span>
+      <span class="section-name">LOOKBOOK&nbsp;/&nbsp;EDITORIAL</span>
+    </div>
+
+    <div class="lookbook-headline">
+      <h2 class="huge-type">
+        <span class="reveal-line"><span>EDITORIAL</span></span>
+        <span class="reveal-line italic serif"><span>archive</span></span>
+      </h2>
+      <p class="lookbook-desc reveal">Shot across Manila, Batanes, and Kyoto — captured in analog 35mm and medium-format digital. A visual ledger of each season.</p>
+    </div>
+
+    <div class="lookbook-grid">
+      <figure class="lb lb-1"><img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=800&q=80" alt="Look 01" /><figcaption>01 — NOIR</figcaption></figure>
+      <figure class="lb lb-2"><img src="https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&w=800&q=80" alt="Look 02" /><figcaption>02 — SILVER</figcaption></figure>
+      <figure class="lb lb-3"><img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=800&q=80" alt="Look 03" /><figcaption>03 — CODE</figcaption></figure>
+      <figure class="lb lb-4"><img src="https://images.unsplash.com/photo-1534751516642-a1af1ef26a56?auto=format&fit=crop&w=800&q=80" alt="Look 04" /><figcaption>04 — CHROMA</figcaption></figure>
+      <figure class="lb lb-5"><img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80" alt="Look 05" /><figcaption>05 — BURNT</figcaption></figure>
+      <figure class="lb lb-6"><img src="https://images.unsplash.com/photo-1488716820095-cbe80883c496?auto=format&fit=crop&w=800&q=80" alt="Look 06" /><figcaption>06 — ZERO</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- ═════════ JOURNAL ═════════ -->
+  <section id="journal" class="journal">
+    <div class="section-head">
+      <span class="section-idx">( 04 )</span>
+      <span class="section-name">THE&nbsp;JOURNAL</span>
+    </div>
+
+    <h2 class="section-title">
+      <span class="reveal-line"><span>Stories</span></span>
+      <span class="reveal-line italic serif"><span>from&nbsp;the&nbsp;atelier.</span></span>
+    </h2>
+
+    <div class="journal-grid">
+      <article class="journal-card reveal">
+        <div class="jc-media"><img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=900&q=80" alt="Journal 1" /></div>
+        <div class="jc-meta">
+          <span>ESSAY · 08&nbsp;MIN</span>
+          <time>MAR 2026</time>
+        </div>
+        <h3>On&nbsp;making&nbsp;clothes that&nbsp;outlive&nbsp;the&nbsp;season.</h3>
+        <span class="jc-link">READ&nbsp;→</span>
+      </article>
+
+      <article class="journal-card reveal">
+        <div class="jc-media"><img src="https://images.unsplash.com/photo-1542060748-10c28b62716f?auto=format&fit=crop&w=900&q=80" alt="Journal 2" /></div>
+        <div class="jc-meta">
+          <span>FILM · 02&nbsp;MIN</span>
+          <time>FEB 2026</time>
+        </div>
+        <h3>Inside&nbsp;ANTIPOLO&nbsp;noir — behind&nbsp;the&nbsp;runway.</h3>
+        <span class="jc-link">WATCH&nbsp;→</span>
+      </article>
+
+      <article class="journal-card reveal">
+        <div class="jc-media"><img src="https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?auto=format&fit=crop&w=900&q=80" alt="Journal 3" /></div>
+        <div class="jc-meta">
+          <span>INTERVIEW · 12&nbsp;MIN</span>
+          <time>JAN 2026</time>
+        </div>
+        <h3>The&nbsp;quiet&nbsp;weavers of&nbsp;Ilocos&nbsp;—&nbsp;a&nbsp;visit.</h3>
+        <span class="jc-link">READ&nbsp;→</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- ═════════ CTA / CONTACT ═════════ -->
+  <section id="contact" class="contact">
+    <div class="contact-inner">
+      <div class="section-head">
+        <span class="section-idx">( 05 )</span>
+        <span class="section-name">CONTACT&nbsp;/&nbsp;STOCKISTS</span>
+      </div>
+
+      <h2 class="mega-type">
+        <span class="reveal-line"><span>LET&rsquo;S</span></span>
+        <span class="reveal-line italic serif"><span>dress&nbsp;tomorrow.</span></span>
+      </h2>
+
+      <div class="contact-grid">
+        <a class="contact-block" href="mailto:press@inigo.mnl">
+          <span class="cb-label">PRESS&nbsp;&amp;&nbsp;MEDIA</span>
+          <span class="cb-value">press@inigo.mnl</span>
+          <span class="cb-arrow">→</span>
+        </a>
+        <a class="contact-block" href="mailto:wholesale@inigo.mnl">
+          <span class="cb-label">WHOLESALE</span>
+          <span class="cb-value">wholesale@inigo.mnl</span>
+          <span class="cb-arrow">→</span>
+        </a>
+        <a class="contact-block" href="mailto:studio@inigo.mnl">
+          <span class="cb-label">ATELIER</span>
+          <span class="cb-value">studio@inigo.mnl</span>
+          <span class="cb-arrow">→</span>
+        </a>
+      </div>
+
+      <div class="stockists">
+        <div class="stockist-head">
+          <span>CURRENT&nbsp;STOCKISTS</span>
+          <span>VIII&nbsp;CITIES</span>
+        </div>
+        <ul>
+          <li><b>MANILA</b><span>ATELIER&nbsp;FLAGSHIP</span><span>POBLACION</span></li>
+          <li><b>TOKYO</b><span>UNITED&nbsp;ARROWS&nbsp;&amp;&nbsp;SONS</span><span>HARAJUKU</span></li>
+          <li><b>SEOUL</b><span>BOON&nbsp;THE&nbsp;SHOP</span><span>CHEONGDAM</span></li>
+          <li><b>SINGAPORE</b><span>CLUB&nbsp;21</span><span>ORCHARD</span></li>
+          <li><b>HONG&nbsp;KONG</b><span>JOYCE</span><span>CENTRAL</span></li>
+          <li><b>LONDON</b><span>MACHINE&nbsp;A</span><span>SOHO</span></li>
+          <li><b>PARIS</b><span>THE&nbsp;BROKEN&nbsp;ARM</span><span>3e</span></li>
+          <li><b>NEW&nbsp;YORK</b><span>DOVER&nbsp;STREET&nbsp;MARKET</span><span>NOMAD</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ FOOTER ═════════ -->
+  <footer class="footer">
+    <div class="footer-huge">
+      <span class="reveal-line"><span>INIGO</span></span>
+    </div>
+
+    <div class="footer-grid">
+      <div class="f-col">
+        <span class="f-label">ATELIER</span>
+        <p>28&nbsp;Don&nbsp;Pedro St.<br/>Poblacion, Makati<br/>Metro Manila 1210, PH</p>
+      </div>
+      <div class="f-col">
+        <span class="f-label">CONTACT</span>
+        <p>studio@inigo.mnl<br/>+63&nbsp;2&nbsp;8822&nbsp;4421</p>
+      </div>
+      <div class="f-col">
+        <span class="f-label">SOCIAL</span>
+        <p><a href="#">Instagram&nbsp;↗</a><br/><a href="#">TikTok&nbsp;↗</a><br/><a href="#">Vimeo&nbsp;↗</a></p>
+      </div>
+      <div class="f-col">
+        <span class="f-label">NEWSLETTER</span>
+        <form class="f-form" onsubmit="event.preventDefault(); this.querySelector('input').value=''; this.querySelector('.f-ok').style.opacity=1;">
+          <input type="email" placeholder="your@email" required />
+          <button type="submit">→</button>
+          <span class="f-ok">Subscribed.</span>
+        </form>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 INIGO ATELIER, INC.</span>
+      <span>CRAFTED IN MANILA</span>
+      <span>ALL RIGHTS RESERVED</span>
+    </div>
+  </footer>
+
+</main>
+
+<!-- LIBS -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+
+<script src="js/main.js"></script>
+</body>
+</html>
