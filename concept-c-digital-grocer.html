@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Gemrin — The Digital Grocer</title>
+<meta name="description" content="Gemrin. A frictionless pantry index. Rice, noodles, sauces, fresh veg.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#fafaf7;
+  --ink:#0b0b0a;
+  --line:#0b0b0a;
+  --muted:#55554f;
+  --faint:#dcdcd4;
+  --accent:#ff3d00;
+  --jade:#00764e;
+  --amber:#c88800;
+  --sans:'Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{background:var(--paper);color:var(--ink);font-family:var(--mono);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(var(--faint) 1px,transparent 1px);background-size:100% 8px;pointer-events:none;z-index:1;opacity:.35}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* Custom cursor — crosshair */
+.cur-x,.cur-y{position:fixed;background:var(--ink);pointer-events:none;z-index:9998;opacity:.25;transition:opacity .25s}
+.cur-x{left:0;right:0;height:1px}
+.cur-y{top:0;bottom:0;width:1px}
+body.hov .cur-x,body.hov .cur-y{opacity:.7;background:var(--accent)}
+@media (hover:none){.cur-x,.cur-y{display:none}}
+
+.skip{position:absolute;left:-999px}
+.skip:focus{left:16px;top:16px;background:var(--ink);color:var(--paper);padding:10px 14px;font-family:var(--mono);font-size:11px;z-index:1000}
+
+/* Top bar — efficient, no fluff */
+.bar{position:fixed;top:0;left:0;right:0;z-index:500;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:24px;padding:14px 20px;background:var(--paper);border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.bar .brand{font-family:var(--sans);font-weight:800;letter-spacing:.08em;font-size:15px;display:flex;align-items:center;gap:10px}
+.bar .brand::before{content:"◼";color:var(--accent);font-size:12px}
+.bar .live{display:flex;gap:16px;justify-content:center;color:var(--muted)}
+.bar .live b{color:var(--ink);font-weight:500}
+.bar .live .open{color:var(--jade)}
+.bar .live .open::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--jade);margin-right:6px;vertical-align:middle;animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+.bar .actions{display:flex;gap:8px}
+.bar button.qa,.bar a.qa{padding:8px 14px;border:1px solid var(--line);background:var(--paper);transition:background .15s,color .15s;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.bar button.qa:hover,.bar a.qa:hover{background:var(--ink);color:var(--paper)}
+.bar button.qa.prim{background:var(--ink);color:var(--paper)}
+.bar button.qa.prim:hover{background:var(--accent)}
+.bar .kbd{padding:1px 6px;border:1px solid currentColor;border-radius:3px;font-size:10px;opacity:.7}
+
+/* Quick-action drawer */
+.qdraw{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--paper);border-left:1px solid var(--line);z-index:550;transform:translateX(100%);transition:transform .4s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;box-shadow:-40px 0 80px rgba(0,0,0,.08)}
+.qdraw[data-open="true"]{transform:translateX(0)}
+.qdraw header{padding:20px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.qdraw header h3{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.qdraw header button{font-family:var(--mono);font-size:12px;letter-spacing:.1em}
+.qdraw .body{padding:24px;flex:1;overflow:auto}
+.qdraw .row{padding:18px 0;border-bottom:1px dashed var(--faint);display:grid;grid-template-columns:110px 1fr;gap:20px;align-items:baseline}
+.qdraw .row:last-child{border-bottom:0}
+.qdraw .row dt{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.qdraw .row dd{font-family:var(--sans);font-size:17px;font-weight:500;line-height:1.4}
+.qdraw .row dd b{font-weight:700}
+.qdraw .row dd small{display:block;font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400;margin-top:4px}
+.qdraw .cta{margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qdraw .cta a{padding:14px;text-align:center;border:1px solid var(--line);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;transition:background .2s,color .2s}
+.qdraw .cta a:hover{background:var(--ink);color:var(--paper)}
+.qdraw .cta a.prim{background:var(--ink);color:var(--paper)}
+.qdraw .cta a.prim:hover{background:var(--accent)}
+.qback{position:fixed;inset:0;background:rgba(11,11,10,.3);z-index:540;opacity:0;pointer-events:none;transition:opacity .3s}
+.qback[data-open="true"]{opacity:1;pointer-events:auto}
+
+main{padding-top:49px;position:relative;z-index:2}
+
+/* HERO 200vh */
+.hero{height:200vh;position:relative;border-bottom:1px solid var(--line)}
+.hero .sticky{position:sticky;top:49px;height:calc(100vh - 49px);padding:40px 20px;display:grid;grid-template-columns:repeat(12,1fr);gap:20px;align-content:space-between}
+.hero-meta{grid-column:1/13;display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:14px}
+.hero-meta b{color:var(--ink);font-weight:500}
+.hero h1{grid-column:1/13;font-family:var(--sans);font-weight:800;font-size:clamp(64px,16vw,280px);line-height:.84;letter-spacing:-.05em;align-self:center}
+.hero h1 .lo{display:block;color:var(--muted);-webkit-text-stroke:1px var(--ink);-webkit-text-fill-color:transparent}
+.hero h1 .hi{display:block}
+.hero h1 .acc{color:var(--accent)}
+.hero h1 .slash::after{content:"/";color:var(--muted);margin:0 .2em;font-weight:400}
+.hero-foot{grid-column:1/13;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;border-top:1px solid var(--line);padding-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.hero-foot div b{display:block;color:var(--muted);font-weight:400;font-size:10px;margin-bottom:4px}
+.hero-two{position:absolute;top:100vh;left:0;right:0;height:100vh;padding:40px 20px;display:grid;grid-template-columns:repeat(12,1fr);gap:20px;align-items:center;border-top:1px solid var(--line)}
+.hero-two .t{grid-column:1/8}
+.hero-two .t span{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:16px}
+.hero-two .t h2{font-family:var(--sans);font-weight:800;font-size:clamp(40px,6vw,96px);line-height:.92;letter-spacing:-.035em}
+.hero-two .t h2 em{font-style:normal;color:var(--accent)}
+.hero-two .b{grid-column:8/13;border:1px solid var(--line);padding:24px;font-family:var(--mono);font-size:12px;line-height:1.8;background:var(--paper)}
+.hero-two .b::before{content:"// Manifesto";display:block;font-size:10px;letter-spacing:.14em;color:var(--muted);margin-bottom:12px;text-transform:uppercase}
+.hero-two .b p+p{margin-top:12px}
+
+/* SECTION grid */
+section.sec{padding:80px 20px;border-bottom:1px solid var(--line);position:relative}
+.sec-head{display:grid;grid-template-columns:repeat(12,1fr);gap:20px;margin-bottom:32px;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:20px}
+.sec-head .num{grid-column:1/2;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.sec-head .t{grid-column:2/9;font-family:var(--sans);font-weight:800;font-size:clamp(32px,4vw,56px);line-height:1;letter-spacing:-.03em}
+.sec-head .t em{font-style:normal;color:var(--accent)}
+.sec-head .x{grid-column:9/13;justify-self:end;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:right}
+
+/* STORE index */
+.idx{display:grid;grid-template-columns:repeat(12,1fr);border-top:1px solid var(--line)}
+.idx-row{grid-column:1/13;display:grid;grid-template-columns:60px 1.4fr 1fr 1fr 120px 80px;gap:20px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:13px;transition:background .15s;cursor:pointer}
+.idx-row:hover{background:var(--ink);color:var(--paper)}
+.idx-row .sku{color:var(--muted);font-size:11px;letter-spacing:.1em}
+.idx-row:hover .sku{color:rgba(250,250,247,.5)}
+.idx-row .nm{font-family:var(--sans);font-size:17px;font-weight:600;letter-spacing:-.01em}
+.idx-row .org{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.idx-row:hover .org{color:rgba(250,250,247,.6)}
+.idx-row .cat{font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.idx-row .px{font-family:var(--sans);font-weight:600;font-size:15px;text-align:right}
+.idx-row .st{text-align:right;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.idx-row .st.ok{color:var(--jade)}
+.idx-row .st.low{color:var(--amber)}
+.idx-row:hover .st.ok{color:#5fe0a7}
+.idx-row:hover .st.low{color:#ffd66e}
+
+/* FILTERS */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.chip{padding:7px 14px;border:1px solid var(--line);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:var(--paper);cursor:pointer;transition:background .15s,color .15s}
+.chip:hover{background:var(--ink);color:var(--paper)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+
+/* RECIPES — compact cards */
+.rec-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.rec{grid-column:span 4;background:var(--paper);padding:28px 24px;min-height:240px;display:flex;flex-direction:column;justify-content:space-between;transition:background .2s;cursor:pointer;position:relative;overflow:hidden}
+.rec:hover{background:var(--ink);color:var(--paper)}
+.rec .meta{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between}
+.rec:hover .meta{color:rgba(250,250,247,.6)}
+.rec h3{font-family:var(--sans);font-size:24px;font-weight:600;line-height:1.15;letter-spacing:-.01em;margin:28px 0}
+.rec .ings{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);line-height:1.7}
+.rec:hover .ings{color:rgba(250,250,247,.7)}
+.rec .arr{position:absolute;top:24px;right:20px;font-size:14px;transition:transform .3s}
+.rec:hover .arr{transform:translate(4px,-4px)}
+
+/* CONTACT */
+.contact{padding:80px 20px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
+.contact h2{grid-column:1/7;font-family:var(--sans);font-weight:800;font-size:clamp(44px,7vw,120px);line-height:.86;letter-spacing:-.04em}
+.contact h2 em{font-style:normal;color:var(--accent)}
+.contact .map{grid-column:7/13;border:1px solid var(--line);min-height:320px;position:relative;background:
+  linear-gradient(90deg,transparent 49.5%,var(--faint) 49.5%,var(--faint) 50.5%,transparent 50.5%),
+  linear-gradient(0deg,transparent 49.5%,var(--faint) 49.5%,var(--faint) 50.5%,transparent 50.5%),
+  repeating-linear-gradient(0deg,transparent,transparent 24px,var(--faint) 24px,var(--faint) 25px),
+  repeating-linear-gradient(90deg,transparent,transparent 24px,var(--faint) 24px,var(--faint) 25px),
+  var(--paper);overflow:hidden}
+.contact .map .pin{position:absolute;top:48%;left:52%;width:14px;height:14px;background:var(--accent);border-radius:50%;box-shadow:0 0 0 4px rgba(255,61,0,.2),0 0 0 10px rgba(255,61,0,.1)}
+.contact .map .pin::after{content:"510 Irving St";position:absolute;top:-28px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);white-space:nowrap;background:var(--paper);padding:4px 8px;border:1px solid var(--line)}
+.contact .details{grid-column:1/7;margin-top:48px;display:grid;grid-template-columns:1fr 1fr;gap:28px 40px}
+.contact .details .row dt{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.contact .details .row dd{font-family:var(--sans);font-size:18px;font-weight:500}
+.contact .details .row dd a{border-bottom:1px solid var(--ink);transition:color .2s,border-color .2s}
+.contact .details .row dd a:hover{color:var(--accent);border-color:var(--accent)}
+
+footer{padding:20px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);gap:20px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+footer b{color:var(--ink);font-weight:500}
+
+@media (max-width:900px){
+  .bar{grid-template-columns:auto auto;gap:12px}
+  .bar .live{display:none}
+  .hero .sticky{grid-template-columns:1fr;padding:24px 16px}
+  .hero-foot{grid-template-columns:repeat(2,1fr)}
+  .hero-two{grid-template-columns:1fr;padding:24px 16px}
+  .hero-two .t,.hero-two .b{grid-column:1/-1}
+  section.sec,.contact{padding:56px 16px}
+  .sec-head{grid-template-columns:1fr}
+  .sec-head .num,.sec-head .t,.sec-head .x{grid-column:1}
+  .idx-row{grid-template-columns:50px 1fr 80px;gap:10px}
+  .idx-row .org,.idx-row .cat,.idx-row .st{display:none}
+  .rec{grid-column:span 12}
+  .contact h2,.contact .map,.contact .details{grid-column:1/-1}
+  .contact .details{grid-template-columns:1fr}
+  footer{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+<div class="cur-x" aria-hidden="true"></div>
+<div class="cur-y" aria-hidden="true"></div>
+
+<header class="bar" role="banner">
+  <a href="#" class="brand">GEMRIN</a>
+  <div class="live">
+    <span><b class="open">OPEN</b> · 09:00 — 20:00</span>
+    <span>SF · <b>510 IRVING ST</b></span>
+    <span>482 SKUs</span>
+  </div>
+  <div class="actions">
+    <button class="qa" id="openQuick" aria-haspopup="dialog" aria-controls="qdraw">
+      <span>Quick Info</span>
+      <span class="kbd">Q</span>
+    </button>
+    <a class="qa prim" href="#store">Shop →</a>
+  </div>
+</header>
+
+<div class="qback" id="qback" aria-hidden="true"></div>
+<aside class="qdraw" id="qdraw" role="dialog" aria-labelledby="qdraw-h" aria-hidden="true">
+  <header>
+    <h3 id="qdraw-h">// Quick Info</h3>
+    <button id="closeQuick" aria-label="Close">CLOSE · ESC</button>
+  </header>
+  <div class="body">
+    <dl>
+      <div class="row"><dt>Status</dt><dd><b>Open now</b><small>Closes at 20:00 · Fri</small></dd></div>
+      <div class="row"><dt>Hours</dt><dd>09:00 — 20:00<small>Monday through Sunday</small></dd></div>
+      <div class="row"><dt>Address</dt><dd>510 Irving Street<small>San Francisco, CA 94122</small></dd></div>
+      <div class="row"><dt>Phone</dt><dd>+1 415 000 0000<small>Calls welcome during hours</small></dd></div>
+      <div class="row"><dt>Transit</dt><dd>N-Judah · 9th Ave<small>3 min walk</small></dd></div>
+      <div class="row"><dt>Parking</dt><dd>Street + Lot on 8th<small>Meter ends at 18:00</small></dd></div>
+    </dl>
+    <div class="cta">
+      <a href="tel:+14150000000">Call</a>
+      <a href="#" class="prim">Directions →</a>
+    </div>
+  </div>
+</aside>
+
+<main id="main">
+
+  <section class="hero" aria-label="Hero">
+    <div class="sticky">
+      <div class="hero-meta">
+        <span>//  <b>GEMRIN/2026</b> · culinary gallery</span>
+        <span>INDEX v.4.0</span>
+        <span>CONCEPT C · DIGITAL GROCER</span>
+        <span>SF — <b>37.764 / -122.467</b></span>
+      </div>
+      <h1>
+        <span class="lo">PANTRY</span>
+        <span class="hi">FOR THE <span class="acc">MODERN</span></span>
+        <span class="lo">KITCHEN.</span>
+      </h1>
+      <div class="hero-foot">
+        <div><b>CATEGORIES</b>Noodles · Rice · Sauce · Veg · Sweet</div>
+        <div><b>PRODUCERS</b>42 single-origin</div>
+        <div><b>STOCK</b>482 items · live</div>
+        <div><b>DELIVERY</b>Same-day · SF only</div>
+      </div>
+    </div>
+    <div class="hero-two">
+      <div class="t">
+        <span>// thesis</span>
+        <h2>No fluff. <em>Just flavor,</em> indexed.</h2>
+      </div>
+      <div class="b">
+        <p>Gemrin is a working grocery, shipped as a website. Every SKU you see is on the shelf right now. If it's sold out, we mark it out. If it's in, you can walk in and grab it.</p>
+        <p>We don't do stories. We don't do slideshows. We do rice, we do sauce, we do vegetables that were in a field yesterday.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="store" aria-labelledby="store-h">
+    <div class="sec-head">
+      <span class="num">§01</span>
+      <h2 class="t" id="store-h">The <em>Index.</em></h2>
+      <span class="x">Sorted by aisle · live stock</span>
+    </div>
+    <div class="filters" role="group" aria-label="Filter by category">
+      <button class="chip" aria-pressed="true">All</button>
+      <button class="chip" aria-pressed="false">Noodles</button>
+      <button class="chip" aria-pressed="false">Rice</button>
+      <button class="chip" aria-pressed="false">Sauce</button>
+      <button class="chip" aria-pressed="false">Fresh Veg</button>
+      <button class="chip" aria-pressed="false">Sweets</button>
+    </div>
+    <div class="idx" role="list">
+      <div class="idx-row" role="listitem"><span class="sku">GR-014</span><span class="nm">Yuzu Koshō, 60g</span><span class="org">Tokushima · JP</span><span class="cat">Sauce</span><span class="px">$18.00</span><span class="st ok">In</span></div>
+      <div class="idx-row" role="listitem"><span class="sku">GR-003</span><span class="nm">Koshihikari Rice, 2kg</span><span class="org">Niigata · JP</span><span class="cat">Rice</span><span class="px">$28.00</span><span class="st ok">In</span></div>
+      <div class="idx-row" role="listitem"><span class="sku">GR-027</span><span class="nm">Hand-Dried Nori, 20 sheets</span><span class="org">Gwangcheon · KR</span><span class="cat">Sea</span><span class="px">$12.00</span><span class="st ok">In</span></div>
+      <div class="idx-row" role="listitem"><span class="sku">GR-041</span><span class="nm">Dried Soba, 200g</span><span class="org">Nagano · JP</span><span class="cat">Noodle</span><span class="px">$9.50</span><span class="st low">Low</span></div>
+      <div class="idx-row" role="listitem"><span class="sku">GR-052</span><span class="nm">Black Vinegar, 250ml</span><span class="org">Zhenjiang · CN</span><span class="cat">Sauce</span><span class="px">$14.00</span><span class="st ok">In</span></div>
+      <div class="idx-row" role="listitem"><span class="sku">GR-068</span><span class="nm">Shiso Leaves, bunch</span><span class="org">Local · CA</span><span class="cat">Fresh</span><span class="px">$6.50</span><span class="st ok">In</span></div>
+      <div class="idx-row" role="listitem"><span class="sku">GR-071</span><span class="nm">Toasted Sesame Oil, 200ml</span><span class="org">Seoul · KR</span><span class="cat">Sauce</span><span class="px">$16.00</span><span class="st ok">In</span></div>
+      <div class="idx-row" role="listitem"><span class="sku">GR-088</span><span class="nm">Mochi, rotating flavors</span><span class="org">Local · SF</span><span class="cat">Sweet</span><span class="px">$8.00</span><span class="st low">Low</span></div>
+      <div class="idx-row" role="listitem"><span class="sku">GR-102</span><span class="nm">Gai Lan, bunch</span><span class="org">Local · CA</span><span class="cat">Fresh</span><span class="px">$4.50</span><span class="st ok">In</span></div>
+    </div>
+  </section>
+
+  <section class="sec" id="recipes" aria-labelledby="recipes-h">
+    <div class="sec-head">
+      <span class="num">§02</span>
+      <h2 class="t" id="recipes-h">Recipes <em>that work.</em></h2>
+      <span class="x">Three · Weekly</span>
+    </div>
+    <div class="rec-grid">
+      <article class="rec">
+        <div class="meta"><span>01 · Noodle</span><span>12 MIN</span></div>
+        <h3>Cold soba, chili oil, smashed cucumber</h3>
+        <div class="ings">GR-041 · GR-071 · GR-052<br>+ cucumber · scallion · garlic</div>
+        <span class="arr">↗</span>
+      </article>
+      <article class="rec">
+        <div class="meta"><span>02 · Rice</span><span>35 MIN</span></div>
+        <h3>Turmeric coconut rice w/ runny egg</h3>
+        <div class="ings">GR-003 · GR-071<br>+ coconut milk · turmeric · egg</div>
+        <span class="arr">↗</span>
+      </article>
+      <article class="rec">
+        <div class="meta"><span>03 · Fresh</span><span>09 MIN</span></div>
+        <h3>Gai lan, black vinegar, crispy shallot</h3>
+        <div class="ings">GR-102 · GR-052 · GR-071<br>+ shallot · chili flake · salt</div>
+        <span class="arr">↗</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-h">
+    <h2 id="contact-h">Walk <em>in.</em></h2>
+    <div class="map" aria-hidden="true"><span class="pin"></span></div>
+    <div class="details">
+      <div class="row"><dt>Address</dt><dd><a href="#">510 Irving St · SF</a></dd></div>
+      <div class="row"><dt>Hours</dt><dd>Daily · 09:00—20:00</dd></div>
+      <div class="row"><dt>Phone</dt><dd><a href="tel:+14150000000">+1 415 000 0000</a></dd></div>
+      <div class="row"><dt>Email</dt><dd><a href="mailto:hello@gemrin.co">hello@gemrin.co</a></dd></div>
+    </div>
+  </section>
+
+  <footer role="contentinfo">
+    <span>© <b>GEMRIN</b> 2026</span>
+    <span>// CONCEPT C — DIGITAL GROCER</span>
+    <span>v.4.0 · Apr 18</span>
+    <span>SF · <b>510 IRVING ST</b></span>
+  </footer>
+</main>
+
+<script>
+// Crosshair cursor
+(function(){
+  if(matchMedia('(hover:none)').matches)return;
+  const x=document.querySelector('.cur-x'),y=document.querySelector('.cur-y');
+  let tx=0,ty=0,cx=0,cy=0;
+  addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY},{passive:true});
+  (function raf(){cx+=(tx-cx)*.28;cy+=(ty-cy)*.28;x.style.transform=`translateY(${cy}px)`;y.style.transform=`translateX(${cx}px)`;requestAnimationFrame(raf)})();
+  document.querySelectorAll('a,button,.idx-row,.rec,.chip').forEach(el=>{
+    el.addEventListener('pointerenter',()=>document.body.classList.add('hov'));
+    el.addEventListener('pointerleave',()=>document.body.classList.remove('hov'));
+  });
+})();
+
+// Quick-action drawer
+(function(){
+  const open=document.getElementById('openQuick');
+  const close=document.getElementById('closeQuick');
+  const draw=document.getElementById('qdraw');
+  const back=document.getElementById('qback');
+  const set=o=>{draw.dataset.open=o;back.dataset.open=o;draw.setAttribute('aria-hidden',!o);open.setAttribute('aria-expanded',o);if(o){close.focus()}else{open.focus()}};
+  open.setAttribute('aria-expanded','false');
+  open.addEventListener('click',()=>set(true));
+  close.addEventListener('click',()=>set(false));
+  back.addEventListener('click',()=>set(false));
+  addEventListener('keydown',e=>{
+    if(e.key==='Escape')set(false);
+    if((e.key==='q'||e.key==='Q')&&!/^(input|textarea|select)$/i.test(document.activeElement?.tagName)){e.preventDefault();set(draw.dataset.open!=='true')}
+  });
+})();
+
+// Filter chips (single-select)
+(function(){
+  const chips=document.querySelectorAll('.chip');
+  chips.forEach(c=>c.addEventListener('click',()=>{
+    chips.forEach(x=>x.setAttribute('aria-pressed','false'));
+    c.setAttribute('aria-pressed','true');
+    const cat=c.textContent.trim().toLowerCase();
+    document.querySelectorAll('.idx-row').forEach(r=>{
+      const rcat=r.querySelector('.cat').textContent.trim().toLowerCase();
+      r.style.display=(cat==='all'||cat.startsWith(rcat)||rcat.startsWith(cat))?'':'none';
+    });
+  }));
+})();
+</script>
+</body>
+</html>

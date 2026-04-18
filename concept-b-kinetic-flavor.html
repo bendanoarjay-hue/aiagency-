@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Gemrin — Kinetic Flavor</title>
+<meta name="description" content="Gemrin. A moving portrait of Asian flavor — noodles, rice, fresh vegetables.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0c0a08;
+  --bg-2:#151210;
+  --ink:#f5efe3;
+  --ink-60:rgba(245,239,227,.6);
+  --ink-30:rgba(245,239,227,.3);
+  --ink-12:rgba(245,239,227,.12);
+  --chili:#ff5a2d;
+  --jade:#7fcc9a;
+  --amber:#f5b942;
+  --plum:#a86bff;
+  --sans:'Geist',system-ui,sans-serif;
+  --serif:'Instrument Serif',Georgia,serif;
+  --mono:'Geist Mono',ui-monospace,monospace;
+}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.5}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at 20% 0%,rgba(255,90,45,.08),transparent 50%),radial-gradient(ellipse at 80% 100%,rgba(168,107,255,.07),transparent 50%);pointer-events:none;z-index:1}
+body::after{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");background-size:180px;opacity:.06;pointer-events:none;z-index:2;mix-blend-mode:overlay}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+:focus-visible{outline:2px solid var(--amber);outline-offset:4px;border-radius:4px}
+
+/* Cursor — flavor orb */
+.cur{position:fixed;top:0;left:0;width:14px;height:14px;border-radius:50%;background:var(--chili);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:screen;box-shadow:0 0 30px var(--chili),0 0 60px rgba(255,90,45,.5);transition:background .3s,width .3s,height .3s}
+.cur.big{width:80px;height:80px;background:transparent;border:1px solid var(--ink);box-shadow:none;backdrop-filter:invert(1);mix-blend-mode:difference}
+@media (hover:none){.cur{display:none}}
+
+.skip{position:absolute;left:-999px}
+.skip:focus{left:16px;top:16px;background:var(--ink);color:var(--bg);padding:10px 14px;font-family:var(--mono);font-size:11px;z-index:1000}
+
+/* Ghost nav */
+nav.ghost{position:fixed;top:0;left:0;right:0;padding:24px 32px;display:flex;justify-content:space-between;align-items:center;z-index:500}
+.brand{font-family:var(--serif);font-size:22px;letter-spacing:-.01em;display:flex;align-items:center;gap:14px}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--chili);box-shadow:0 0 16px var(--chili);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.6}}
+.brand em{font-style:italic}
+.nav-right{display:flex;align-items:center;gap:20px}
+.live{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-60);display:flex;align-items:center;gap:8px}
+.live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--jade);box-shadow:0 0 8px var(--jade)}
+.menu-btn{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;display:flex;align-items:center;gap:10px;padding:10px 18px;border:1px solid var(--ink-12);border-radius:999px;background:rgba(245,239,227,.03);backdrop-filter:blur(12px);transition:border-color .3s,background .3s}
+.menu-btn:hover{border-color:var(--ink-30);background:rgba(245,239,227,.06)}
+.menu-btn .hamb{width:14px;height:10px;position:relative}
+.menu-btn .hamb::before,.menu-btn .hamb::after{content:"";position:absolute;left:0;right:0;height:1px;background:currentColor;transition:transform .35s}
+.menu-btn .hamb::before{top:0}.menu-btn .hamb::after{bottom:0}
+.menu-btn[aria-expanded="true"] .hamb::before{transform:translateY(4.5px) rotate(45deg)}
+.menu-btn[aria-expanded="true"] .hamb::after{transform:translateY(-4.5px) rotate(-45deg)}
+
+.overlay{position:fixed;inset:0;background:radial-gradient(ellipse at center,var(--bg-2),var(--bg));z-index:400;opacity:0;pointer-events:none;transition:opacity .5s;display:grid;place-items:center;padding:80px 32px}
+.overlay[data-open="true"]{opacity:1;pointer-events:auto}
+.overlay ul{list-style:none;text-align:center;display:flex;flex-direction:column;gap:4px}
+.overlay li{overflow:hidden}
+.overlay li a{font-family:var(--serif);font-size:clamp(48px,8vw,128px);line-height:1;display:block;padding:8px 0;transition:transform .5s cubic-bezier(.2,.8,.2,1),color .5s;letter-spacing:-.02em}
+.overlay li a:hover{color:var(--chili);transform:translateX(20px) skewX(-4deg)}
+.overlay li a em{font-style:italic;color:var(--amber)}
+
+main{position:relative;z-index:3}
+
+/* HERO 200vh */
+.hero{height:200vh;position:relative}
+.hero .sticky{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:0 32px}
+.hero-word{font-family:var(--serif);font-size:clamp(100px,22vw,360px);line-height:.82;letter-spacing:-.05em;text-align:center;position:relative;will-change:transform}
+.hero-word .l1{display:block}
+.hero-word .l2{display:block;font-style:italic;background:linear-gradient(110deg,var(--chili) 0%,var(--amber) 40%,var(--plum) 75%,var(--jade) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:saturate(1.2)}
+.hero-ingredient{position:absolute;width:180px;height:180px;border-radius:50%;will-change:transform;pointer-events:none;filter:blur(.5px)}
+.ing-1{top:12%;left:8%;background:radial-gradient(circle at 35% 35%,#ff9e6b,#ff5a2d 60%,#7a1b00);box-shadow:0 40px 80px rgba(255,90,45,.3)}
+.ing-2{top:18%;right:10%;width:140px;height:140px;background:radial-gradient(circle at 40% 40%,#a9e3bc,#4a9d68 60%,#0e3a1c);box-shadow:0 40px 80px rgba(74,157,104,.3)}
+.ing-3{bottom:14%;left:16%;width:120px;height:120px;background:radial-gradient(circle at 40% 40%,#ffe399,#f5b942 55%,#5c3f07);box-shadow:0 40px 80px rgba(245,185,66,.3)}
+.ing-4{bottom:18%;right:14%;width:160px;height:160px;background:radial-gradient(circle at 40% 40%,#d4b2ff,#a86bff 55%,#3a1570);box-shadow:0 40px 80px rgba(168,107,255,.3)}
+.hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-60);display:flex;align-items:center;gap:12px}
+.hero-scroll::after{content:"";width:1px;height:40px;background:var(--ink-30);animation:drop 1.8s ease-in-out infinite}
+@keyframes drop{0%,100%{transform:scaleY(1);transform-origin:top}50%{transform:scaleY(.4);transform-origin:top}}
+.hero-second{position:absolute;top:100vh;left:0;right:0;height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:0 32px;gap:32px}
+.hero-second h2{font-family:var(--serif);font-size:clamp(36px,4.8vw,76px);line-height:1.05;letter-spacing:-.025em}
+.hero-second h2 em{font-style:italic;color:var(--chili)}
+.hero-second .meta{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-60);margin-bottom:24px}
+.hero-second .vis{height:70vh;position:relative;border-radius:24px;overflow:hidden;background:linear-gradient(135deg,var(--bg-2),#1f1a15)}
+.hero-second .vis::before{content:"";position:absolute;inset:0;background:conic-gradient(from 0deg,rgba(255,90,45,.2),rgba(168,107,255,.2),rgba(127,204,154,.2),rgba(245,185,66,.2),rgba(255,90,45,.2));animation:spin 18s linear infinite;filter:blur(40px)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero-second .vis .label{position:absolute;top:20px;left:20px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-60);z-index:2}
+.hero-second .vis .big-num{position:absolute;bottom:16px;right:20px;font-family:var(--serif);font-style:italic;font-size:clamp(80px,12vw,180px);line-height:.8;letter-spacing:-.04em;z-index:2}
+
+/* Sections */
+section.sec{padding:160px 32px;position:relative;min-height:100vh}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:80px;border-top:1px solid var(--ink-12);padding-top:24px}
+.sec-tag{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-60)}
+.sec-title{font-family:var(--serif);font-size:clamp(48px,8vw,144px);line-height:.88;letter-spacing:-.04em;max-width:18ch}
+.sec-title em{font-style:italic}
+.sec-title .hl{background:linear-gradient(110deg,var(--chili),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* STORE — scroll-triggered categories */
+.cats{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--ink-12)}
+.cat{display:grid;grid-template-columns:80px 1fr 2fr 120px;gap:32px;align-items:center;padding:36px 0;border-bottom:1px solid var(--ink-12);cursor:pointer;position:relative;transition:padding-left .5s cubic-bezier(.2,.8,.2,1)}
+.cat:hover{padding-left:24px}
+.cat .cn{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--ink-60)}
+.cat .ct{font-family:var(--serif);font-size:clamp(40px,5.2vw,84px);line-height:1;letter-spacing:-.03em}
+.cat .ct em{font-style:italic;opacity:.7}
+.cat .cd{font-size:14px;color:var(--ink-60);max-width:44ch;line-height:1.6}
+.cat .ca{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:8px;transition:transform .4s,color .4s}
+.cat:hover .ca{transform:translateX(8px);color:var(--chili)}
+.cat .preview{position:absolute;top:0;bottom:0;right:140px;width:200px;pointer-events:none;opacity:0;transform:translateY(20px) scale(.92);transition:opacity .4s,transform .4s;border-radius:14px;overflow:hidden}
+.cat:hover .preview{opacity:1;transform:translateY(0) scale(1)}
+.cat:nth-child(1) .preview{background:linear-gradient(160deg,#2d1a10,#ff5a2d 220%)}
+.cat:nth-child(2) .preview{background:linear-gradient(160deg,#0e2a1a,#7fcc9a 220%)}
+.cat:nth-child(3) .preview{background:linear-gradient(160deg,#2a2010,#f5b942 220%)}
+.cat:nth-child(4) .preview{background:linear-gradient(160deg,#1a0f2a,#a86bff 220%)}
+.cat:nth-child(5) .preview{background:linear-gradient(160deg,#2a1a1a,#c7604f 220%)}
+
+/* RECIPES */
+.recipes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.recipe{aspect-ratio:3/4;border-radius:20px;overflow:hidden;position:relative;background:var(--bg-2);cursor:pointer;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.recipe:hover{transform:translateY(-12px)}
+.recipe .bg{position:absolute;inset:0;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.recipe:hover .bg{transform:scale(1.08)}
+.r1 .bg{background:radial-gradient(circle at 60% 40%,#ff7a4a,#7a1b00 70%)}
+.r2 .bg{background:radial-gradient(circle at 40% 30%,#7fcc9a,#0e2a1a 70%)}
+.r3 .bg{background:radial-gradient(circle at 50% 30%,#f5b942,#3a2a07 70%)}
+.recipe::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.7))}
+.recipe .info{position:absolute;left:24px;right:24px;bottom:24px;z-index:2}
+.recipe .tag{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(245,239,227,.7);margin-bottom:10px}
+.recipe h3{font-family:var(--serif);font-size:clamp(22px,1.8vw,30px);line-height:1.1;letter-spacing:-.01em}
+.recipe h3 em{font-style:italic}
+.recipe .time{position:absolute;top:20px;left:24px;z-index:2;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,239,227,.8);padding:6px 10px;border:1px solid rgba(245,239,227,.3);border-radius:999px;backdrop-filter:blur(8px)}
+
+/* CONTACT */
+.contact{padding:160px 32px;min-height:100vh;position:relative;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-content:center}
+.contact h2{font-family:var(--serif);font-size:clamp(60px,9vw,168px);line-height:.86;letter-spacing:-.04em}
+.contact h2 em{font-style:italic;background:linear-gradient(110deg,var(--chili),var(--amber),var(--jade));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.contact .info{align-self:end}
+.contact .info dl{display:grid;grid-template-columns:auto 1fr;gap:14px 28px;max-width:460px}
+.contact .info dt{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-60);padding-top:6px}
+.contact .info dd{font-family:var(--serif);font-size:22px;line-height:1.3}
+.contact .cta{display:inline-flex;align-items:center;gap:14px;margin-top:40px;padding:18px 28px;background:var(--chili);color:var(--bg);border-radius:999px;font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;transition:transform .4s,box-shadow .4s,background .4s}
+.contact .cta:hover{transform:translateY(-3px);box-shadow:0 24px 60px rgba(255,90,45,.4);background:var(--amber)}
+.contact .cta .arr{transition:transform .4s}
+.contact .cta:hover .arr{transform:translateX(6px)}
+
+footer{border-top:1px solid var(--ink-12);padding:28px 32px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-60)}
+
+@media (max-width:900px){
+  nav.ghost{padding:18px 20px}
+  .live{display:none}
+  .hero-ingredient{display:none}
+  .hero-second{grid-template-columns:1fr;padding:0 20px}
+  .hero-second .vis{height:40vh}
+  section.sec,.contact{padding:100px 20px}
+  .cat{grid-template-columns:40px 1fr;gap:12px}
+  .cat .cd,.cat .ca,.cat .preview{display:none}
+  .recipes-grid{grid-template-columns:1fr;gap:16px}
+  .contact{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+<div class="cur" aria-hidden="true"></div>
+
+<nav class="ghost" aria-label="Primary">
+  <a href="#" class="brand"><span class="dot" aria-hidden="true"></span>Gemrin <em>co.</em></a>
+  <div class="nav-right">
+    <span class="live">Open · 09—20</span>
+    <button class="menu-btn" aria-expanded="false" aria-controls="overlay">
+      <span>Menu</span>
+      <span class="hamb" aria-hidden="true"></span>
+    </button>
+  </div>
+</nav>
+
+<div class="overlay" id="overlay" aria-hidden="true">
+  <ul>
+    <li><a href="#store">Pantry</a></li>
+    <li><a href="#recipes"><em>Recipes</em></a></li>
+    <li><a href="#contact">Visit</a></li>
+  </ul>
+</div>
+
+<main id="main">
+
+  <section class="hero" aria-label="Hero">
+    <div class="sticky">
+      <span class="hero-ingredient ing-1" aria-hidden="true"></span>
+      <span class="hero-ingredient ing-2" aria-hidden="true"></span>
+      <span class="hero-ingredient ing-3" aria-hidden="true"></span>
+      <span class="hero-ingredient ing-4" aria-hidden="true"></span>
+      <h1 class="hero-word">
+        <span class="l1">Flavor</span>
+        <span class="l2">in motion.</span>
+      </h1>
+      <div class="hero-scroll"><span>Scroll</span></div>
+    </div>
+    <div class="hero-second">
+      <div>
+        <div class="meta">— A living pantry</div>
+        <h2>Noodles that <em>steam.</em> Rice that <em>sings.</em> Vegetables still tasting like rain.</h2>
+      </div>
+      <div class="vis" aria-hidden="true">
+        <span class="label">Live Stock · 0482 items</span>
+        <span class="big-num">04</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="store" aria-labelledby="store-h">
+    <div class="sec-head">
+      <span class="sec-tag">01 · Pantry</span>
+      <span class="sec-tag">Scroll to reveal</span>
+    </div>
+    <h2 class="sec-title" id="store-h">Four aisles. <em class="hl">One idea.</em></h2>
+    <div class="cats" role="list">
+      <a class="cat" role="listitem" href="#">
+        <span class="cn">N° 01</span>
+        <span class="ct">Noodles</span>
+        <span class="cd">Soba, ramen, rice stick, glass — dried slow, cut by hand.</span>
+        <span class="ca">48 items →</span>
+        <span class="preview" aria-hidden="true"></span>
+      </a>
+      <a class="cat" role="listitem" href="#">
+        <span class="cn">N° 02</span>
+        <span class="ct">Fresh <em>Veg</em></span>
+        <span class="cd">Local farms, Asian heirlooms. Bok choy, daikon, shiso, gai lan.</span>
+        <span class="ca">36 items →</span>
+        <span class="preview" aria-hidden="true"></span>
+      </a>
+      <a class="cat" role="listitem" href="#">
+        <span class="cn">N° 03</span>
+        <span class="ct">Rice &amp; <em>Grain</em></span>
+        <span class="cd">Single-origin koshihikari, forbidden black, brown sweet.</span>
+        <span class="ca">22 items →</span>
+        <span class="preview" aria-hidden="true"></span>
+      </a>
+      <a class="cat" role="listitem" href="#">
+        <span class="cn">N° 04</span>
+        <span class="ct">Sauce &amp; <em>Oil</em></span>
+        <span class="cd">Aged tamari, chili crisp, black vinegar, toasted sesame.</span>
+        <span class="ca">64 items →</span>
+        <span class="preview" aria-hidden="true"></span>
+      </a>
+      <a class="cat" role="listitem" href="#">
+        <span class="cn">N° 05</span>
+        <span class="ct">Sweets</span>
+        <span class="cd">Mochi, wagashi, milk bread, lotus paste, yuzu marmalade.</span>
+        <span class="ca">28 items →</span>
+        <span class="preview" aria-hidden="true"></span>
+      </a>
+    </div>
+  </section>
+
+  <section class="sec" id="recipes" aria-labelledby="recipes-h">
+    <div class="sec-head">
+      <span class="sec-tag">02 · Recipes</span>
+      <span class="sec-tag">Weekly</span>
+    </div>
+    <h2 class="sec-title" id="recipes-h">Supper, <em>on loop.</em></h2>
+    <div class="recipes-grid">
+      <article class="recipe r1">
+        <div class="bg" aria-hidden="true"></div>
+        <span class="time">12 min</span>
+        <div class="info">
+          <div class="tag">Noodle · Cold</div>
+          <h3>Chili oil soba, <em>smashed cucumber</em></h3>
+        </div>
+      </article>
+      <article class="recipe r2">
+        <div class="bg" aria-hidden="true"></div>
+        <span class="time">18 min</span>
+        <div class="info">
+          <div class="tag">Fresh · Quick</div>
+          <h3>Ginger bok choy, <em>crispy shallot</em></h3>
+        </div>
+      </article>
+      <article class="recipe r3">
+        <div class="bg" aria-hidden="true"></div>
+        <span class="time">35 min</span>
+        <div class="info">
+          <div class="tag">Rice · Slow</div>
+          <h3>Turmeric coconut rice, <em>fried egg</em></h3>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-h">
+    <h2 id="contact-h">Come <em>taste it.</em></h2>
+    <div class="info">
+      <dl>
+        <dt>Where</dt><dd>510 Irving Street · San Francisco</dd>
+        <dt>When</dt><dd>Daily · 09:00 — 20:00</dd>
+        <dt>Call</dt><dd>+1 415 000 0000</dd>
+        <dt>Write</dt><dd>hello@gemrin.co</dd>
+      </dl>
+      <a href="#" class="cta"><span>Get directions</span><span class="arr">→</span></a>
+    </div>
+  </section>
+
+  <footer>
+    <span>© Gemrin 2026</span>
+    <span>Concept B — Kinetic Flavor</span>
+  </footer>
+</main>
+
+<script>
+// Custom cursor w/ inertia
+(function(){
+  const cur=document.querySelector('.cur');
+  if(!cur||matchMedia('(hover:none)').matches)return;
+  let x=0,y=0,tx=0,ty=0;
+  addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY},{passive:true});
+  (function raf(){x+=(tx-x)*.18;y+=(ty-y)*.18;cur.style.transform=`translate(${x}px,${y}px) translate(-50%,-50%)`;requestAnimationFrame(raf)})();
+  document.querySelectorAll('a,button,.cat,.recipe').forEach(el=>{
+    el.addEventListener('pointerenter',()=>cur.classList.add('big'));
+    el.addEventListener('pointerleave',()=>cur.classList.remove('big'));
+  });
+})();
+
+// Menu overlay
+(function(){
+  const btn=document.querySelector('.menu-btn');
+  const ov=document.getElementById('overlay');
+  const toggle=open=>{btn.setAttribute('aria-expanded',open);ov.dataset.open=open;ov.setAttribute('aria-hidden',!open);document.body.style.overflow=open?'hidden':''};
+  btn.addEventListener('click',()=>toggle(btn.getAttribute('aria-expanded')!=='true'));
+  ov.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toggle(false)));
+  addEventListener('keydown',e=>{if(e.key==='Escape')toggle(false)});
+})();
+
+// GSAP motion
+(function(){
+  if(!window.gsap||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Hero word parallax + scale
+  gsap.to('.hero-word',{scale:.82,y:-60,opacity:.35,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom bottom',scrub:.8}});
+  gsap.utils.toArray('.hero-ingredient').forEach((el,i)=>{
+    const dir=i%2?1:-1;
+    gsap.to(el,{y:-200-(i*40),x:dir*80,rotate:dir*35,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom bottom',scrub:1.2}});
+  });
+
+  // Cursor-react ingredients
+  const ings=document.querySelectorAll('.hero-ingredient');
+  addEventListener('pointermove',e=>{
+    const cx=innerWidth/2,cy=innerHeight/2;
+    const dx=(e.clientX-cx)/cx,dy=(e.clientY-cy)/cy;
+    ings.forEach((el,i)=>{
+      const f=(i+1)*8;
+      gsap.to(el,{x:dx*f,y:dy*f,duration:1.2,ease:'power3.out'});
+    });
+  },{passive:true});
+
+  // Section title reveal
+  gsap.utils.toArray('.sec-title').forEach(el=>{
+    gsap.from(el,{y:80,opacity:0,duration:1.1,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 82%'}});
+  });
+
+  // Category row reveal (staggered)
+  gsap.from('.cat',{y:40,opacity:0,duration:.8,stagger:.08,ease:'power3.out',scrollTrigger:{trigger:'.cats',start:'top 75%'}});
+
+  // Recipe cards
+  gsap.from('.recipe',{y:60,opacity:0,duration:.9,stagger:.12,ease:'power3.out',scrollTrigger:{trigger:'.recipes-grid',start:'top 78%'}});
+
+  // Smooth parallax for recipe bg
+  gsap.utils.toArray('.recipe').forEach(el=>{
+    const bg=el.querySelector('.bg');
+    gsap.to(bg,{yPercent:-12,ease:'none',scrollTrigger:{trigger:el,start:'top bottom',end:'bottom top',scrub:true}});
+  });
+
+  // Hero second pane fade in
+  gsap.from('.hero-second > div, .hero-second .vis',{y:60,opacity:0,duration:1,stagger:.15,ease:'power3.out',scrollTrigger:{trigger:'.hero-second',start:'top 70%'}});
+})();
+
+// Lenis-style lightweight inertia scroll — optional subtle smoothing (no lib)
+(function(){
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  // Browsers already handle native smooth-scroll; add micro easing on wheel delta
+  let current=0,target=0,raf;
+  const ease=.1;
+  addEventListener('scroll',()=>{target=scrollY},{passive:true});
+})();
+</script>
+</body>
+</html>

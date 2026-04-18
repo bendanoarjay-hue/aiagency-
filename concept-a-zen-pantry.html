@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Gemrin — The Zen Pantry</title>
+<meta name="description" content="Gemrin. A quiet, curated pantry of Asian provisions. Object as art.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#f4f1ea;
+  --ink:#0a0908;
+  --ink-60:rgba(10,9,8,.6);
+  --ink-30:rgba(10,9,8,.3);
+  --ink-12:rgba(10,9,8,.12);
+  --accent:#b8441f;
+  --seaweed:#1f3a2b;
+  --yuzu:#c9a227;
+  --sans:'Inter',system-ui,sans-serif;
+  --serif:'Fraunces',Georgia,serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;scroll-snap-type:none}
+  *{animation:none!important;transition:none!important}
+}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.5}
+body::before{content:"";position:fixed;inset:0;background-image:radial-gradient(rgba(10,9,8,.035) 1px,transparent 1px);background-size:3px 3px;pointer-events:none;z-index:1;mix-blend-mode:multiply}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:2px}
+
+/* Custom cursor */
+.cur{position:fixed;top:0;left:0;width:6px;height:6px;border-radius:50%;background:var(--ink);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .3s cubic-bezier(.2,.8,.2,1),height .3s cubic-bezier(.2,.8,.2,1)}
+.cur.big{width:56px;height:56px;background:transparent;border:1px solid var(--paper)}
+@media (hover:none){.cur{display:none}}
+
+/* Skip link */
+.skip{position:absolute;left:-999px}
+.skip:focus{left:16px;top:16px;background:var(--ink);color:var(--paper);padding:10px 14px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;z-index:1000}
+
+/* Ghost nav */
+nav.ghost{position:fixed;top:0;left:0;right:0;padding:28px 40px;display:flex;justify-content:space-between;align-items:center;z-index:500;mix-blend-mode:difference;color:#f4f1ea;pointer-events:none}
+nav.ghost *{pointer-events:auto}
+.brand{font-family:var(--serif);font-weight:300;font-size:22px;letter-spacing:-.01em;font-style:italic}
+.brand b{font-weight:400;font-style:normal;letter-spacing:.12em;text-transform:uppercase;font-family:var(--sans);font-size:11px;vertical-align:middle;margin-left:14px;border-left:1px solid currentColor;padding-left:14px}
+.menu-btn{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;display:flex;align-items:center;gap:12px}
+.menu-btn .hamb{width:22px;height:10px;position:relative}
+.menu-btn .hamb::before,.menu-btn .hamb::after{content:"";position:absolute;left:0;right:0;height:1px;background:currentColor;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.menu-btn .hamb::before{top:0}.menu-btn .hamb::after{bottom:0}
+.menu-btn[aria-expanded="true"] .hamb::before{transform:translateY(4.5px) rotate(45deg)}
+.menu-btn[aria-expanded="true"] .hamb::after{transform:translateY(-4.5px) rotate(-45deg)}
+
+/* Overlay menu */
+.overlay{position:fixed;inset:0;background:var(--ink);color:var(--paper);z-index:400;transform:translateY(-100%);transition:transform .7s cubic-bezier(.76,0,.24,1);display:grid;grid-template-columns:1fr 1fr;padding:120px 40px 40px}
+.overlay[data-open="true"]{transform:translateY(0)}
+.overlay h2{font-family:var(--serif);font-weight:300;font-style:italic;font-size:clamp(56px,8vw,120px);line-height:.92;letter-spacing:-.03em}
+.overlay ul{list-style:none;display:flex;flex-direction:column;gap:10px;align-self:end}
+.overlay li a{font-family:var(--serif);font-weight:300;font-size:clamp(36px,5vw,72px);display:block;padding:6px 0;border-bottom:1px solid rgba(244,241,234,.14);transition:padding .4s ease,color .4s ease}
+.overlay li a:hover{padding-left:24px;color:var(--yuzu)}
+.overlay li a span{font-family:var(--mono);font-size:11px;letter-spacing:.18em;vertical-align:super;opacity:.5;margin-left:12px}
+.overlay .meta{position:absolute;bottom:40px;left:40px;right:40px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(244,241,234,.5)}
+
+main{position:relative;z-index:2}
+
+/* HERO — 200vh strict */
+.hero{height:200vh;position:relative}
+.hero .sticky{position:sticky;top:0;height:100vh;display:grid;grid-template-columns:1fr 1fr;gap:40px;padding:120px 40px 48px;overflow:hidden;scroll-snap-align:start}
+.hero-mark{position:absolute;top:120px;left:40px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-60);display:flex;gap:40px}
+.hero-mark span::before{content:"●";color:var(--accent);margin-right:8px}
+.hero-left{align-self:end;position:relative}
+.hero-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-60);margin-bottom:28px}
+.hero-title{font-family:var(--serif);font-weight:300;font-size:clamp(72px,11.5vw,184px);line-height:.82;letter-spacing:-.045em}
+.hero-title em{font-style:italic;color:var(--accent)}
+.hero-title .ghost{-webkit-text-stroke:1px var(--ink);color:transparent;display:block}
+.hero-meta{margin-top:40px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-60);display:flex;gap:32px;flex-wrap:wrap}
+.hero-right{position:relative;align-self:stretch;display:flex;align-items:center;justify-content:center}
+.obj{position:absolute;background:#d4cec0;overflow:hidden;will-change:transform}
+.obj.o1{width:46%;aspect-ratio:3/4;top:8%;right:12%;background:linear-gradient(135deg,#1f3a2b 0%,#2d5440 60%,#0d1a13 100%)}
+.obj.o1::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(200,220,180,.4),transparent 60%)}
+.obj.o2{width:30%;aspect-ratio:1/1;bottom:14%;left:4%;background:radial-gradient(circle at 40% 35%,#e8c96b,#b8831f 55%,#5c3a07);border-radius:50%}
+.obj.o3{width:18%;aspect-ratio:2/3;top:18%;left:30%;background:linear-gradient(180deg,#b8441f,#7a2a10)}
+.obj-cap{position:absolute;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-60)}
+.obj-cap.c1{top:6%;right:10%;text-align:right}
+.obj-cap.c1::after{content:"";display:block;width:40px;height:1px;background:var(--ink-30);margin:8px 0 0 auto}
+.obj-cap.c2{bottom:10%;left:40%}
+
+/* Hero panel 2 (second viewport) */
+.hero-two{position:absolute;top:100vh;left:0;right:0;height:100vh;padding:0 40px;display:grid;grid-template-columns:2fr 3fr;gap:40px;align-items:center;scroll-snap-align:start}
+.hero-two-text{font-family:var(--serif);font-weight:300;font-size:clamp(28px,3.2vw,48px);line-height:1.15;letter-spacing:-.02em;max-width:640px}
+.hero-two-text em{font-style:italic;color:var(--accent)}
+.hero-two-text::before{content:"— est. 2004";display:block;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-60);margin-bottom:28px;font-style:normal}
+.hero-two-vis{height:70vh;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:12px}
+.tile{overflow:hidden;position:relative;background:#ebe5d6}
+.tile:nth-child(1){grid-row:1/3;background:linear-gradient(160deg,#f0ddb4,#d2a04a 80%)}
+.tile:nth-child(2){background:linear-gradient(180deg,#1f3a2b,#0d1a13)}
+.tile:nth-child(3){background:linear-gradient(180deg,#b8441f,#6b1d07)}
+.tile .no{position:absolute;top:14px;left:16px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:rgba(244,241,234,.7)}
+.tile .nm{position:absolute;bottom:16px;left:16px;right:16px;font-family:var(--serif);font-style:italic;font-weight:300;font-size:22px;color:#f4f1ea}
+
+/* SECTIONS — editorial grid */
+section.sec{min-height:100vh;padding:140px 40px;scroll-snap-align:start;scroll-snap-stop:always;position:relative}
+.sec-num{position:absolute;top:40px;right:40px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-60)}
+.sec-num::before{content:"";display:inline-block;width:32px;height:1px;background:var(--ink-30);vertical-align:middle;margin-right:12px}
+
+/* STORE — asymmetric CSS grid */
+.store-grid{display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:auto auto auto;gap:40px;align-items:end}
+.store-lede{grid-column:1/6;grid-row:1;font-family:var(--serif);font-weight:300;font-size:clamp(44px,5.5vw,88px);line-height:.92;letter-spacing:-.035em;font-style:italic}
+.store-lede b{font-style:normal;font-weight:400;color:var(--seaweed)}
+.store-note{grid-column:8/12;grid-row:1;align-self:end;font-size:15px;line-height:1.6;color:var(--ink-60);max-width:30ch}
+.store-note::before{content:"§01";display:block;font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--ink);margin-bottom:16px}
+.product{grid-row:2;overflow:hidden;aspect-ratio:3/4;position:relative;background:#ebe5d6;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.product:hover{transform:translateY(-8px)}
+.product:nth-of-type(1){grid-column:1/4}
+.product:nth-of-type(2){grid-column:5/8;margin-top:80px}
+.product:nth-of-type(3){grid-column:9/13}
+.product .swatch{position:absolute;inset:0}
+.p1 .swatch{background:radial-gradient(circle at 50% 40%,#f2d28a,#c2841e 70%,#5e3305)}
+.p2 .swatch{background:linear-gradient(180deg,#1f3a2b,#0d1a13)}
+.p2 .swatch::after{content:"";position:absolute;inset:20% 30%;background:radial-gradient(ellipse,rgba(200,220,180,.5),transparent 60%)}
+.p3 .swatch{background:linear-gradient(180deg,#e8e4d6 0%,#c9b88c 100%)}
+.product .tag{position:absolute;top:16px;left:16px;right:16px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(244,241,234,.85)}
+.p3 .tag{color:var(--ink-60)}
+.product .name{position:absolute;bottom:16px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:flex-end}
+.product .name h3{font-family:var(--serif);font-weight:300;font-style:italic;font-size:28px;color:#f4f1ea;letter-spacing:-.01em}
+.p3 .name h3{color:var(--ink)}
+.product .name .px{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:rgba(244,241,234,.8)}
+.p3 .name .px{color:var(--ink-60)}
+
+/* RECIPES — vertical index */
+.recipes{display:grid;grid-template-columns:1fr 2fr;gap:80px;align-items:start}
+.rec-h{font-family:var(--serif);font-weight:300;font-size:clamp(48px,6vw,96px);line-height:.92;letter-spacing:-.035em;font-style:italic;position:sticky;top:160px}
+.rec-h b{font-style:normal;font-weight:400;color:var(--accent);display:block}
+.rec-list{list-style:none;border-top:1px solid var(--ink-12)}
+.rec-list li{display:grid;grid-template-columns:60px 1fr auto;gap:24px;padding:28px 0;border-bottom:1px solid var(--ink-12);align-items:baseline;transition:padding .4s cubic-bezier(.2,.8,.2,1)}
+.rec-list li:hover{padding-left:20px}
+.rec-list .n{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink-60)}
+.rec-list .t{font-family:var(--serif);font-weight:300;font-size:clamp(24px,2.4vw,36px);letter-spacing:-.02em}
+.rec-list .t em{font-style:italic;color:var(--seaweed)}
+.rec-list .m{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink-60);text-transform:uppercase}
+
+/* CONTACT — quiet */
+.contact{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;gap:40px;padding:140px 40px;align-content:center;background:var(--ink);color:var(--paper)}
+.contact .sec-num{color:rgba(244,241,234,.5)}
+.contact .sec-num::before{background:rgba(244,241,234,.3)}
+.contact h2{font-family:var(--serif);font-weight:300;font-style:italic;font-size:clamp(60px,7.5vw,128px);line-height:.88;letter-spacing:-.035em}
+.contact h2 em{color:var(--yuzu)}
+.contact .col dl{display:grid;grid-template-columns:auto 1fr;gap:18px 32px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;line-height:1.6}
+.contact .col dt{color:rgba(244,241,234,.5);text-transform:uppercase;letter-spacing:.18em;font-size:10px;padding-top:4px}
+.contact .col dd{font-family:var(--serif);font-size:22px;font-weight:300;letter-spacing:-.01em}
+.contact .col{align-self:end}
+.contact-cta{margin-top:56px;display:inline-flex;align-items:center;gap:16px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;padding:18px 28px;border:1px solid rgba(244,241,234,.3);border-radius:999px;transition:background .4s,color .4s,border-color .4s}
+.contact-cta:hover{background:var(--yuzu);color:var(--ink);border-color:var(--yuzu)}
+.contact-cta .arr{display:inline-block;transition:transform .4s}
+.contact-cta:hover .arr{transform:translateX(6px)}
+
+footer{padding:28px 40px;background:var(--ink);color:rgba(244,241,234,.5);font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between}
+
+@media (max-width:900px){
+  nav.ghost{padding:20px 20px}
+  .hero .sticky{grid-template-columns:1fr;padding:100px 20px 24px}
+  .obj.o1{width:80%;right:10%;top:2%}.obj.o2{width:50%;left:0}.obj.o3{display:none}
+  .hero-two{grid-template-columns:1fr;padding:0 20px}
+  .hero-two-vis{height:46vh}
+  section.sec{padding:100px 20px}
+  .store-grid{grid-template-columns:1fr;gap:20px}
+  .store-lede,.store-note,.product:nth-of-type(1),.product:nth-of-type(2),.product:nth-of-type(3){grid-column:1/-1;margin-top:0}
+  .recipes{grid-template-columns:1fr;gap:32px}
+  .rec-h{position:static}
+  .contact{grid-template-columns:1fr;padding:100px 20px}
+  .overlay{grid-template-columns:1fr;padding:100px 20px 40px}
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+<div class="cur" aria-hidden="true"></div>
+
+<nav class="ghost" aria-label="Primary">
+  <a href="#" class="brand">Gemrin<b>Pantry · SF</b></a>
+  <button class="menu-btn" aria-expanded="false" aria-controls="overlay">
+    <span>Index</span>
+    <span class="hamb" aria-hidden="true"></span>
+  </button>
+</nav>
+
+<div class="overlay" id="overlay" aria-hidden="true">
+  <h2>An index of <em>small, honest things.</em></h2>
+  <ul>
+    <li><a href="#store"><span>01</span>Pantry</a></li>
+    <li><a href="#recipes"><span>02</span>Recipes</a></li>
+    <li><a href="#contact"><span>03</span>Visit</a></li>
+    <li><a href="#"><span>04</span>Journal</a></li>
+  </ul>
+  <div class="meta">
+    <span>© 2026 Gemrin</span>
+    <span>510 Irving St, SF</span>
+    <span>Open daily 09—20</span>
+  </div>
+</div>
+
+<main id="main">
+
+  <section class="hero" aria-label="Hero">
+    <div class="sticky">
+      <div class="hero-mark">
+        <span>Culinary Gallery</span>
+        <span>N° 001</span>
+      </div>
+      <div class="hero-left">
+        <div class="hero-eyebrow">Asian provisions — curated since 2004</div>
+        <h1 class="hero-title">
+          Quiet<br>
+          <em>pantry,</em><br>
+          <span class="ghost">loud flavor.</span>
+        </h1>
+        <div class="hero-meta">
+          <span>37.7636° N</span>
+          <span>122.4675° W</span>
+          <span>Inner Sunset</span>
+        </div>
+      </div>
+      <div class="hero-right" aria-hidden="true">
+        <div class="obj-cap c1">Fig. 01 — Aged tamari, 3yr cedar<br>Shizuoka prefecture</div>
+        <div class="obj o1"></div>
+        <div class="obj o3"></div>
+        <div class="obj o2"></div>
+        <div class="obj-cap c2">Fig. 02 — Yuzu, Tokushima</div>
+      </div>
+    </div>
+    <div class="hero-two">
+      <div class="hero-two-text">
+        We don't stock <em>everything.</em> We stock the things worth keeping on a shelf — the vinegars with a postcode, the rice that still smells like the field.
+      </div>
+      <div class="hero-two-vis" aria-hidden="true">
+        <div class="tile"><span class="no">01</span><span class="nm">Heirloom rice</span></div>
+        <div class="tile"><span class="no">02</span><span class="nm">Seaweed</span></div>
+        <div class="tile"><span class="no">03</span><span class="nm">Chili oils</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="store" aria-labelledby="store-h">
+    <span class="sec-num">§01 — Pantry</span>
+    <div class="store-grid">
+      <h2 class="store-lede" id="store-h">Objects, not <b>groceries.</b></h2>
+      <p class="store-note">Three aisles. Forty-two producers. Every label traceable to a farm, a forest, or a single family kitchen.</p>
+      <article class="product p1">
+        <div class="swatch"></div>
+        <div class="tag"><span>N° 014</span><span>Tokushima, JP</span></div>
+        <div class="name"><h3>Yuzu koshō</h3><span class="px">$18</span></div>
+      </article>
+      <article class="product p2">
+        <div class="swatch"></div>
+        <div class="tag"><span>N° 027</span><span>Gwangcheon, KR</span></div>
+        <div class="name"><h3>Seaweed, hand-dried</h3><span class="px">$12</span></div>
+      </article>
+      <article class="product p3">
+        <div class="swatch"></div>
+        <div class="tag"><span>N° 003</span><span>Niigata, JP</span></div>
+        <div class="name"><h3>Koshihikari rice</h3><span class="px">$28</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec" id="recipes" aria-labelledby="recipes-h">
+    <span class="sec-num">§02 — Recipes</span>
+    <div class="recipes">
+      <h2 class="rec-h" id="recipes-h">Slow <b>suppers.</b></h2>
+      <ol class="rec-list">
+        <li><span class="n">R/01</span><span class="t">Cold soba, <em>brown butter dashi</em></span><span class="m">12 min</span></li>
+        <li><span class="n">R/02</span><span class="t">Kimchi fried rice, <em>runny yolk</em></span><span class="m">18 min</span></li>
+        <li><span class="n">R/03</span><span class="t">Grilled bok choy, <em>black vinegar</em></span><span class="m">9 min</span></li>
+        <li><span class="n">R/04</span><span class="t">Scallion pancake, <em>the honest way</em></span><span class="m">35 min</span></li>
+        <li><span class="n">R/05</span><span class="t">Congee, <em>ginger and good salt</em></span><span class="m">60 min</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-h">
+    <span class="sec-num">§03 — Visit</span>
+    <div class="col">
+      <h2 id="contact-h">Come by.<br><em>Slowly.</em></h2>
+      <a href="#" class="contact-cta"><span>Plan your visit</span><span class="arr">→</span></a>
+    </div>
+    <div class="col">
+      <dl>
+        <dt>Address</dt><dd>510 Irving Street<br>San Francisco, CA 94122</dd>
+        <dt>Hours</dt><dd>Mon–Sun · 09:00–20:00</dd>
+        <dt>Phone</dt><dd>+1 415 000 0000</dd>
+        <dt>Email</dt><dd>hello@gemrin.co</dd>
+      </dl>
+    </div>
+  </section>
+
+  <footer>
+    <span>© Gemrin 2026</span>
+    <span>Concept A — Zen Pantry</span>
+  </footer>
+</main>
+
+<script>
+// Custom cursor
+(function(){
+  const cur=document.querySelector('.cur');
+  if(!cur||matchMedia('(hover:none)').matches)return;
+  let x=0,y=0,tx=0,ty=0;
+  addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY},{passive:true});
+  (function raf(){x+=(tx-x)*.22;y+=(ty-y)*.22;cur.style.transform=`translate(${x}px,${y}px) translate(-50%,-50%)`;requestAnimationFrame(raf)})();
+  document.querySelectorAll('a,button,.product,.rec-list li').forEach(el=>{
+    el.addEventListener('pointerenter',()=>cur.classList.add('big'));
+    el.addEventListener('pointerleave',()=>cur.classList.remove('big'));
+  });
+})();
+
+// Menu overlay
+(function(){
+  const btn=document.querySelector('.menu-btn');
+  const ov=document.getElementById('overlay');
+  const toggle=open=>{btn.setAttribute('aria-expanded',open);ov.dataset.open=open;ov.setAttribute('aria-hidden',!open);document.body.style.overflow=open?'hidden':''};
+  btn.addEventListener('click',()=>toggle(btn.getAttribute('aria-expanded')!=='true'));
+  ov.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toggle(false)));
+  addEventListener('keydown',e=>{if(e.key==='Escape')toggle(false)});
+})();
+
+// Parallax objects in hero
+(function(){
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  const objs=document.querySelectorAll('.obj');
+  addEventListener('scroll',()=>{
+    const y=scrollY;
+    objs.forEach((o,i)=>{o.style.transform=`translateY(${y*(0.05+i*0.04)}px)`});
+  },{passive:true});
+})();
+</script>
+</body>
+</html>
