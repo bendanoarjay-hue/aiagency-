@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>GEMRIN — The Zen Pantry</title>
+<meta name="description" content="GEMRIN. Considered ingredients. Quietly sourced." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+  :root{
+    --paper:#F5F2EC;
+    --paper-deep:#EFEAE0;
+    --ink:#111111;
+    --ink-soft:#1d1d1d;
+    --stone:#8A857B;
+    --stone-soft:#B6B1A6;
+    --tea:#4A5A3A;
+    --rule:rgba(17,17,17,.12);
+
+    --sans:'Inter Tight','Helvetica Neue',Arial,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+
+    --gutter:clamp(20px,4vw,56px);
+    --rhythm:clamp(96px,12vh,160px);
+
+    --ease:cubic-bezier(.2,.7,.2,1);
+  }
+
+  html,body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-weight:400;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  html{scroll-behavior:smooth}
+  body{overflow-x:hidden;line-height:1.45}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+
+  ::selection{background:var(--tea);color:var(--paper)}
+
+  /* ── grain (functional, not decorative) ── */
+  .grain{position:fixed;inset:0;z-index:200;pointer-events:none;opacity:.035;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size:220px}
+
+  /* ── nav ── */
+  nav{position:fixed;top:0;left:0;right:0;z-index:120;padding:22px var(--gutter);
+      display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;
+      mix-blend-mode:difference;color:var(--paper)}
+  nav .mark{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+  nav .center{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;text-align:center;color:var(--stone-soft)}
+  nav .right{display:flex;justify-content:flex-end;gap:32px}
+  nav .right a{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;transition:opacity .3s}
+  nav .right a:hover{opacity:1}
+
+  /* ── 200vh Golden Hero ── */
+  .hero{position:relative;height:200vh}
+  .hero-stage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--ink);color:var(--paper)}
+  .hero-media{position:absolute;inset:0;z-index:0}
+  .hero-media::before,
+  .hero-media::after{content:"";position:absolute;inset:-20%;}
+  /* Steam loop — pure CSS so it works without a video asset */
+  .hero-media::before{
+    background:
+      radial-gradient(60% 40% at 30% 70%,rgba(255,255,255,.10),transparent 60%),
+      radial-gradient(50% 35% at 70% 60%,rgba(255,255,255,.07),transparent 65%),
+      radial-gradient(40% 30% at 50% 40%,rgba(255,255,255,.06),transparent 70%);
+    filter:blur(40px);
+    animation:drift 22s ease-in-out infinite alternate;
+  }
+  .hero-media::after{
+    background:radial-gradient(70% 70% at 50% 110%,rgba(74,90,58,.55),transparent 60%);
+    animation:drift 30s ease-in-out -8s infinite alternate;
+  }
+  @keyframes drift{
+    0%  {transform:translate3d(-2%,0,0) scale(1)}
+    50% {transform:translate3d(3%,-3%,0) scale(1.06)}
+    100%{transform:translate3d(-1%,2%,0) scale(1.02)}
+  }
+
+  .hero-vignette{position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:
+      linear-gradient(180deg,rgba(0,0,0,.45),transparent 22%,transparent 70%,rgba(0,0,0,.55)),
+      radial-gradient(ellipse at 50% 50%,transparent 50%,rgba(0,0,0,.45));
+  }
+
+  .hero-headline{position:absolute;left:var(--gutter);right:var(--gutter);bottom:8vh;z-index:2;
+    font-family:var(--sans);font-weight:500;letter-spacing:-.045em;line-height:.82;
+    font-size:clamp(96px,22vw,360px);
+    transform-origin:left bottom;
+    will-change:transform,opacity;
+  }
+  .hero-headline .ghost{
+    -webkit-text-stroke:1px rgba(245,242,236,.35);color:transparent;
+  }
+
+  .hero-meta{position:absolute;left:var(--gutter);top:calc(22px + 44px);z-index:2;
+    display:grid;grid-template-columns:1fr 1fr;gap:48px;max-width:560px;
+    font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--stone-soft);letter-spacing:.04em}
+  .hero-meta b{color:var(--paper);font-weight:500;display:block;letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px}
+
+  .hero-scroll{position:absolute;right:var(--gutter);bottom:8vh;z-index:2;
+    font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--stone-soft);
+    writing-mode:vertical-rl;transform:rotate(180deg)}
+  .hero-scroll::after{content:"";display:block;width:1px;height:48px;background:var(--stone-soft);margin:14px auto 0}
+
+  /* corner-pinned headline appears after hero */
+  .pin-mark{position:fixed;top:22px;left:var(--gutter);z-index:130;
+    font-family:var(--sans);font-weight:500;letter-spacing:-.02em;font-size:18px;color:var(--ink);
+    opacity:0;transform:translateY(-6px);transition:opacity .5s var(--ease),transform .5s var(--ease);pointer-events:none}
+  body.pinned .pin-mark{opacity:1;transform:translateY(0)}
+
+  /* ── pantry: object-as-art on asymmetric grid ── */
+  .pantry{padding:var(--rhythm) var(--gutter) calc(var(--rhythm) * 1.2);background:var(--paper)}
+
+  .label-row{display:grid;grid-template-columns:1fr auto;align-items:end;gap:24px;
+    border-top:1px solid var(--rule);padding-top:24px;margin-bottom:88px}
+  .label-row h2{font-size:clamp(40px,5vw,84px);font-weight:500;letter-spacing:-.035em;line-height:.95;max-width:18ch}
+  .label-row .idx{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--stone)}
+
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(24px,3vw,40px);align-items:end}
+
+  /* asymmetry: each item claims a different column span and offset */
+  .obj{position:relative}
+  .obj figure{position:relative;overflow:hidden;background:var(--paper-deep)}
+  .obj img{width:100%;height:100%;object-fit:cover;will-change:transform;transition:transform 1.2s var(--ease)}
+  .obj:hover img{transform:scale(1.03)}
+  .obj figcaption{display:grid;grid-template-columns:1fr auto;gap:24px;padding:18px 0 0;border-top:1px solid var(--rule);margin-top:18px}
+  .obj .name{font-size:18px;font-weight:500;letter-spacing:-.01em}
+  .obj .origin{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--stone)}
+  .obj .spec{grid-column:1/-1;display:flex;gap:18px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--stone);margin-top:8px}
+
+  /* per-item placement — intentional imbalance */
+  .obj-1{grid-column:1 / span 4}
+  .obj-1 figure{aspect-ratio:3/4}
+  .obj-2{grid-column:7 / span 5;margin-top:160px}
+  .obj-2 figure{aspect-ratio:4/5}
+  .obj-3{grid-column:2 / span 3;margin-top:120px}
+  .obj-3 figure{aspect-ratio:1/1}
+  .obj-4{grid-column:7 / span 6;margin-top:64px}
+  .obj-4 figure{aspect-ratio:5/4}
+  .obj-5{grid-column:3 / span 4;margin-top:120px}
+  .obj-5 figure{aspect-ratio:4/5}
+  .obj-6{grid-column:9 / span 4;margin-top:200px}
+  .obj-6 figure{aspect-ratio:3/4}
+
+  /* parallax hint on figures (transform set in JS) */
+  .obj figure{transform:translate3d(0,0,0)}
+
+  /* ── interlude: long-form quote ── */
+  .interlude{padding:var(--rhythm) var(--gutter);background:var(--paper-deep)}
+  .interlude .grid{align-items:start}
+  .interlude .kicker{grid-column:1 / span 3;font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--stone);padding-top:12px}
+  .interlude blockquote{grid-column:5 / span 8;font-size:clamp(28px,3.4vw,52px);font-weight:300;letter-spacing:-.02em;line-height:1.18;max-width:22ch}
+  .interlude blockquote em{font-style:normal;color:var(--tea)}
+  .interlude .sig{grid-column:5 / span 8;margin-top:36px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--stone)}
+
+  /* ── ledger / footer ── */
+  .ledger{padding:var(--rhythm) var(--gutter) 32px;background:var(--paper)}
+  .ledger .grid{align-items:start;row-gap:48px}
+  .ledger h3{grid-column:1 / span 6;font-size:clamp(40px,5vw,84px);font-weight:500;letter-spacing:-.035em;line-height:.95;max-width:14ch}
+  .ledger .col{grid-column:span 3}
+  .ledger .col h4{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--stone);margin-bottom:14px}
+  .ledger .col a,.ledger .col p{display:block;font-size:15px;line-height:1.7}
+  .ledger .col a:hover{color:var(--tea)}
+  .ledger .baseline{grid-column:1/-1;display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:end;
+    border-top:1px solid var(--rule);padding-top:24px;margin-top:48px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--stone)}
+  .ledger .baseline .center{text-align:center}
+  .ledger .baseline .right{text-align:right}
+
+  /* ── reduced motion ── */
+  @media (prefers-reduced-motion:reduce){
+    .hero-media::before,.hero-media::after{animation:none}
+    .obj img{transition:none}
+    *{scroll-behavior:auto !important}
+  }
+
+  /* ── responsive ── */
+  @media (max-width:900px){
+    nav{grid-template-columns:1fr auto;gap:12px}
+    nav .center{display:none}
+    .hero-meta{grid-template-columns:1fr;gap:18px;max-width:80%}
+    .hero-headline{bottom:6vh}
+    .hero-scroll{display:none}
+    .label-row{grid-template-columns:1fr}
+    .grid{grid-template-columns:repeat(6,1fr);gap:20px}
+    .obj-1{grid-column:1 / span 6;margin-top:0}
+    .obj-2{grid-column:1 / span 6;margin-top:48px}
+    .obj-3{grid-column:1 / span 4;margin-top:48px}
+    .obj-4{grid-column:1 / span 6;margin-top:48px}
+    .obj-5{grid-column:2 / span 5;margin-top:48px}
+    .obj-6{grid-column:1 / span 5;margin-top:48px}
+    .interlude .kicker{grid-column:1/-1}
+    .interlude blockquote,.interlude .sig{grid-column:1/-1}
+    .ledger h3{grid-column:1/-1}
+    .ledger .col{grid-column:span 3}
+  }
+  @media (max-width:560px){
+    .ledger .col{grid-column:1/-1}
+    .ledger .baseline{grid-template-columns:1fr;text-align:left}
+    .ledger .baseline .center,.ledger .baseline .right{text-align:left}
+  }
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<nav>
+  <div class="mark">GEMRIN</div>
+  <div class="center">The Zen Pantry — Spring Index</div>
+  <div class="right">
+    <a href="#pantry">Pantry</a>
+    <a href="#story">Story</a>
+    <a href="#ledger">Ledger</a>
+  </div>
+</nav>
+
+<div class="pin-mark" aria-hidden="true">GEMRIN</div>
+
+<header class="hero" id="hero">
+  <div class="hero-stage">
+    <div class="hero-media" aria-hidden="true"></div>
+    <div class="hero-vignette" aria-hidden="true"></div>
+
+    <div class="hero-meta">
+      <div><b>N° 01</b>Spring Index<br/>04 · 2026</div>
+      <div><b>Provenance</b>Kyoto · Penang<br/>Aix-en-Provence</div>
+    </div>
+
+    <h1 class="hero-headline">
+      <span class="solid">GEMRIN</span><br/>
+      <span class="ghost">PANTRY</span>
+    </h1>
+
+    <div class="hero-scroll">Scroll &nbsp;·&nbsp; 200</div>
+  </div>
+</header>
+
+<section class="pantry" id="pantry">
+  <div class="label-row">
+    <h2>Six objects, considered.<br/>Quietly sourced.</h2>
+    <span class="idx">Index — 06 / 06</span>
+  </div>
+
+  <div class="grid">
+    <article class="obj obj-1">
+      <figure><img src="https://images.unsplash.com/photo-1599909533513-9aac8d4d2cd9?auto=format&fit=crop&w=1200&q=80" alt="Single shoyu bottle, isolated on neutral paper." loading="lazy" /></figure>
+      <figcaption>
+        <span class="name">Cedar-Aged Shoyu</span>
+        <span class="origin">JP · Wakayama</span>
+        <span class="spec"><span>720 ml</span><span>2y barrel</span><span>N° 01</span></span>
+      </figcaption>
+    </article>
+
+    <article class="obj obj-2">
+      <figure><img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=1400&q=80" alt="A single head of bok choy, top-down studio lighting." loading="lazy" /></figure>
+      <figcaption>
+        <span class="name">Heirloom Bok Choy</span>
+        <span class="origin">FR · Provence</span>
+        <span class="spec"><span>340 g</span><span>day-of</span><span>N° 02</span></span>
+      </figcaption>
+    </article>
+
+    <article class="obj obj-3">
+      <figure><img src="https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=1000&q=80" alt="Loose-leaf green tea on a stone surface." loading="lazy" /></figure>
+      <figcaption>
+        <span class="name">First-Flush Sencha</span>
+        <span class="origin">JP · Uji</span>
+        <span class="spec"><span>80 g</span><span>2026 harvest</span><span>N° 03</span></span>
+      </figcaption>
+    </article>
+
+    <article class="obj obj-4">
+      <figure><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1600&q=80" alt="Hand-milled flour spilled on a linen surface." loading="lazy" /></figure>
+      <figcaption>
+        <span class="name">Stone-Milled Flour</span>
+        <span class="origin">FR · Aix</span>
+        <span class="spec"><span>1 kg</span><span>T65</span><span>N° 04</span></span>
+      </figcaption>
+    </article>
+
+    <article class="obj obj-5">
+      <figure><img src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=1200&q=80" alt="A single citrus fruit isolated on linen." loading="lazy" /></figure>
+      <figcaption>
+        <span class="name">Yuzu, Whole</span>
+        <span class="origin">JP · Kōchi</span>
+        <span class="spec"><span>per piece</span><span>winter cut</span><span>N° 05</span></span>
+      </figcaption>
+    </article>
+
+    <article class="obj obj-6">
+      <figure><img src="https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=1200&q=80" alt="A glass jar of pale honey, side-lit." loading="lazy" /></figure>
+      <figcaption>
+        <span class="name">Acacia Honey</span>
+        <span class="origin">MY · Penang</span>
+        <span class="spec"><span>250 g</span><span>raw</span><span>N° 06</span></span>
+      </figcaption>
+    </article>
+  </div>
+</section>
+
+<section class="interlude" id="story">
+  <div class="grid">
+    <p class="kicker">Field Note — N° 02</p>
+    <blockquote>
+      Groceries are a chore. <em>Ingredients</em> are an inheritance.
+      We choose the latter — quietly, slowly, and only when the season agrees.
+    </blockquote>
+    <p class="sig">— The Pantry, signed off Tuesday</p>
+  </div>
+</section>
+
+<footer class="ledger" id="ledger">
+  <div class="grid">
+    <h3>A pantry, kept on paper.</h3>
+
+    <div class="col">
+      <h4>Catalogue</h4>
+      <a href="#pantry">Spring Index</a>
+      <a href="#">Standing Orders</a>
+      <a href="#">Archive</a>
+    </div>
+    <div class="col">
+      <h4>House</h4>
+      <a href="#story">Field Notes</a>
+      <a href="#">Provenance</a>
+      <a href="#">Press</a>
+    </div>
+    <div class="col">
+      <h4>Correspondence</h4>
+      <a href="mailto:pantry@gemrin.com">pantry@gemrin.com</a>
+      <p>Mon — Fri · 09:00 CET</p>
+    </div>
+
+    <div class="baseline">
+      <span>© 2026 Gemrin Pantry, Aix.</span>
+      <span class="center">Set in Inter Tight &amp; JetBrains Mono</span>
+      <span class="right">v0.1 — Zen</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // 200vh Golden Hero: scale + pin transform driven by hero scroll progress only.
+  // Uses requestAnimationFrame to keep work off the scroll thread.
+  (() => {
+    const hero = document.getElementById('hero');
+    const headline = hero.querySelector('.hero-headline');
+    const meta = hero.querySelector('.hero-meta');
+    const scrollMark = hero.querySelector('.hero-scroll');
+    const vignette = hero.querySelector('.hero-vignette');
+    const objects = document.querySelectorAll('.obj figure');
+
+    let ticking = false;
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const rect = hero.getBoundingClientRect();
+        const heroHeight = hero.offsetHeight;            // 200vh
+        const progress = Math.min(1, Math.max(0, -rect.top / (heroHeight - window.innerHeight)));
+
+        // headline: scales from 1 → 0.18, fades meta + scroll cue, drifts up & left.
+        const scale = 1 - progress * 0.82;
+        const tx = -progress * 18; // vw
+        const ty = -progress * 22; // vh
+        headline.style.transform = `translate3d(${tx}vw, ${ty}vh, 0) scale(${scale})`;
+        headline.style.opacity = (1 - progress * 0.35).toFixed(3);
+
+        meta.style.opacity = (1 - progress * 1.4).toFixed(3);
+        scrollMark.style.opacity = (1 - progress * 1.8).toFixed(3);
+        vignette.style.opacity = (1 - progress * 0.35).toFixed(3);
+
+        // pin corner mark when hero is mostly consumed
+        document.body.classList.toggle('pinned', progress > 0.85);
+
+        // subtle parallax on pantry figures
+        const vh = window.innerHeight;
+        objects.forEach((fig, i) => {
+          const r = fig.getBoundingClientRect();
+          if (r.bottom < -200 || r.top > vh + 200) return;
+          const center = r.top + r.height / 2;
+          const offset = (center - vh / 2) / vh; // -1..1ish
+          const depth = (i % 3) * 6 + 6;          // 6,12,18 px
+          fig.style.transform = `translate3d(0, ${(-offset * depth).toFixed(2)}px, 0)`;
+        });
+
+        ticking = false;
+      });
+    };
+
+    document.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('resize', onScroll);
+    onScroll();
+  })();
+</script>
+</body>
+</html>
